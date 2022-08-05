@@ -1,0 +1,20 @@
+create_dataset:
+  columns: ['time', 'active_power', 'active_power2', 'electricity_gage',
+       'frequency', 'intake_pressure', 'line_pressure', 'liquid_rate',
+       'motor_load', 'motor_temperature', 'op_current1', 'op_current2',
+       'op_current3', 'pump_temperature', 'voltageAB', 'voltageBC',
+       'voltageCA', 'well_id']
+predict:
+  SEED: 10
+train:
+  SEED: 10
+  cross_val:
+    test_size: 0.3
+  model:
+    class_weight: balanced
+  model_lr: LogisticRegression
+  model_vec: vector_tfidf
+  name_experiment: my_third
+  stopwords: russian
+  tf_model:
+    max_features: 300
