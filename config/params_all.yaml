@@ -4,17 +4,26 @@ create_dataset:
        'motor_load', 'motor_temperature', 'op_current1', 'op_current2',
        'op_current3', 'pump_temperature', 'voltageAB', 'voltageBC',
        'voltageCA', 'well_id']
+  src_dir: "/c/py/predictive_esp/src/data/create_dataset.py"
+  # input_path output_path
+  CLI_params: "/c/py/predictive_esp/data/interim/featured /c/py/predictive_esp/data/processed"
+
+build_features:
+  src_dir: "/c/py/predictive_esp/src/features/build_features.py"
+  # input_path events_path output_path target_window verbose
+  CLI_params: "/c/py/predictive_esp/data/interim/joined /c/py/predictive_esp/data/raw/events /c/py/predictive_esp/data/interim/featured 7 False"
+
 predict:
   SEED: 10
+  predictions_name: "predictions.csv"
+  src_dir: "/c/py/predictive_esp/src/models/predict.py"
+  # input_path output_path model_name
+  CLI_params: "/c/py/predictive_esp/data/processed/test.csv /c/py/predictive_esp/data/predictions lr_model.pkl"
+
 train:
   SEED: 10
+  src_dir: "/c/py/predictive_esp/src/models/train.py"
   cross_val:
     test_size: 0.3
-  model:
-    class_weight: balanced
-  model_lr: LogisticRegression
-  model_vec: vector_tfidf
-  name_experiment: my_third
-  stopwords: russian
-  tf_model:
-    max_features: 300
+  # train_path output_path target_name model_name
+  CLI_params: "/c/py/predictive_esp/data/processed/train.csv /c/py/predictive_esp/models failure_target lr_model.pkl"

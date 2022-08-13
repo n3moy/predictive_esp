@@ -5,6 +5,8 @@ import pickle
 import pandas as pd
 # from sklearn.linear_model import LogisticRegression
 
+FILENAME = "predictions.csv"
+
 
 @click.command()
 @click.argument("input_path", type=click.Path())
@@ -30,7 +32,6 @@ def predict_model(
     model_predictions = model.predict(predict_data)
     model_predictions = pd.DataFrame(model_predictions)
 
-    FILENAME = "predictions.csv"
     output_path = os.path.join(output_path, FILENAME)
     model_predictions.to_csv(output_path)
 

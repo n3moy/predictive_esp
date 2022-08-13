@@ -1,16 +1,16 @@
 rule all:
     input:
-        "C:\\py\\predictive_esp\\data\\interim\\renamed_update.txt",
-        "C:\\py\\predictive_esp\\data\\interim\\joined_update.txt",
-        "C:\\py\\predictive_esp\\data\\interim\\featured_update.txt",
-        "C:\\py\\predictive_esp\\data\\processed\\processed_update.txt"
+        "C:\\py\\predictive_esp\\reports\\renamed_update.txt",
+        "C:\\py\\predictive_esp\\reports\\joined_update.txt",
+        "C:\\py\\predictive_esp\\reports\\featured_update.txt",
+        "C:\\py\\predictive_esp\\reports\\processed_update.txt"
 
 rule create_dataset:
     input:
         "C:\\py\\predictive_esp\\data\\interim\\featured",
         "C:\\py\\predictive_esp\\data\\processed"
     output:
-        "C:\\py\\predictive_esp\\data\\processed\\processed_update.txt"
+        "C:\\py\\predictive_esp\\reports\\processed_update.txt"
     shell:
         "python -m src.data.create_dataset {input} {output}"
 
@@ -20,7 +20,7 @@ rule build_features:
         "C:\\py\\predictive_esp\\data\\raw\\events",
         "C:\\py\\predictive_esp\\data\\interim\\featured"
     output:
-        "C:\\py\\predictive_esp\\data\\interim\\featured_update.txt"
+        "C:\\py\\predictive_esp\\reports\\featured_update.txt"
     shell:
         "python -m src.features.build_features {input} {output} 7 False"
 
@@ -29,7 +29,7 @@ rule resample_join:
         "C:\\py\\predictive_esp\\data\\interim\\renamed",
         "C:\\py\\predictive_esp\\data\\interim\\joined"
     output:
-        "C:\\py\\predictive_esp\\data\\interim\\joined_update.txt"
+        "C:\\py\\predictive_esp\\reports\\joined_update.txt"
     shell:
         "python -m src.data.resample_join {input} {output} False"
 
@@ -38,7 +38,7 @@ rule rename_features:
         "C:\\py\\predictive_esp\\data\\raw\\data_files",
         "C:\\py\\predictive_esp\\data\\interim\\renamed"
     output:
-        "C:\\py\\predictive_esp\\data\\interim\\renamed_update.txt"
+        "C:\\py\\predictive_esp\\reports\\renamed_update.txt"
     shell:
         "python -m src.data.rename_features {input} {output} False"
 

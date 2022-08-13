@@ -5,7 +5,7 @@ from datetime import datetime
 import click
 import pandas as pd
 import numpy as np
-from src.features.feature_builder import FeatureCalculation
+from feature_builder import FeatureCalculation
 
 
 # This func should be used after joining data by well
@@ -13,16 +13,15 @@ from src.features.feature_builder import FeatureCalculation
 @click.argument("input_path", type=click.Path())
 @click.argument("events_path", type=click.Path())
 @click.argument("output_path", type=click.Path())
-@click.argument("update_file", type=click.Path())
 @click.argument("target_window", type=click.INT)
 @click.argument("verbose", type=click.BOOL)
 def feature_calculation(
-        input_path: str,
-        events_path: str,
-        output_path: str,
-        update_file: str,
-        target_window: int = 7,
-        verbose: bool = False
+    input_path: str,
+    events_path: str,
+    output_path: str,
+    # update_file: str,
+    target_window: int = 7,
+    verbose: bool = False
 ) -> None:
     data_lst = []
     events_dict = {}
@@ -65,9 +64,9 @@ def feature_calculation(
         if verbose:
             print(f"Output data is successfully saved to '{path_to_save}' !")
 
-    with open(update_file, "a") as f:
-        upd_date = datetime.utcfromtimestamp(time.time()).strftime("%Y-%m-%d %H:%M:%S")
-        f.write(f"\nUpdate at {upd_date}")
+    # with open(update_file, "a") as f:
+    #     upd_date = datetime.utcfromtimestamp(time.time()).strftime("%Y-%m-%d %H:%M:%S")
+    #     f.write(f"\nUpdate at {upd_date}")
 
 
 if __name__ == "__main__":
