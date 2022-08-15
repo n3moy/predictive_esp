@@ -57,9 +57,13 @@ def join_data(
 
     test_save_path = os.path.join(output_path, TEST_FILENAME)
     train_save_path = os.path.join(output_path, TRAIN_FILENAME)
-    test_df.to_csv(test_save_path)
-    train_df.to_csv(train_save_path)
+    test_df.to_csv(test_save_path, index=False)
+    train_df.to_csv(train_save_path, index=False)
 
     # with open(update_file, "a") as f:
     #     upd_date = datetime.utcfromtimestamp(time.time()).strftime("%Y-%m-%d %H:%M:%S")
     #     f.write(f"\nUpdate at {upd_date}")
+
+
+if __name__ == "__main__":
+    join_data()

@@ -26,4 +26,4 @@ train:
   cross_val:
     test_size: 0.3
   # train_path output_path target_name model_name
-  CLI_params: "/c/py/predictive_esp/data/processed/train.csv /c/py/predictive_esp/models failure_target lr_model.pkl"
+  CLI_params: "/c/py/predictive_esp/data/processed/train.csv /c/py/predictive_esp/models \"failure_target\" \"lr_model.pkl\""
