@@ -9,7 +9,7 @@ from airflow.sensors.external_task_sensor import ExternalTaskMarker, ExternalTas
 
 default_args = {
     "owner": "n3moy",
-    "start_date": days_ago(0),
+    "start_date": days_ago(1),
     "retries": 3,
     "max_active_tis_per_dag'": 1,
     "trigger_rule": "all_success",
@@ -29,7 +29,8 @@ with DAG(
     "train",
     default_args=default_args,
     description="From raw to processed",
-    schedule_interval=pipelines["create_dataset"]["schedule"]
+    schedule_interval=pipelines["create_dataset"]["schedule"],
+    catchup=False
 ) as train_dag:
 
     t1_id = "build_features"
@@ -72,7 +73,8 @@ with DAG(
     "predict",
     default_args=default_args,
     description="Predicts test.csv file",
-    schedule_interval=pipelines["predict"]["schedule"]
+    schedule_interval=pipelines["predict"]["schedule"],
+    catchup=False
 ) as predict_dag:
 
     inter_task_2 = ExternalTaskSensor(

@@ -9,8 +9,8 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_a
 
 DROP_COLS = ["time", "event_id"]
 TEST_PATH = "/c/py/predictive_esp/data/processed/test.csv"
-
-mlflow.sklearn.autolog()
+mlflow.set_tracking_uri("http://localhost:5000")
+mlflow_experiment_id = 1
 
 
 @click.command()
@@ -45,7 +45,7 @@ def train_lr(
         if count_nan >= row_number//2:
             train_data = train_data.drop(col, axis=1)
             DROP_COLS.append(col)
-    print(DROP_COLS)
+
     test_data = test_data.drop(DROP_COLS, axis=1)
 
     train_data = train_data.select_dtypes(include=[int, float])
@@ -55,20 +55,24 @@ def train_lr(
 
     X, y = train_data.drop(target_name, axis=1), train_data[target_name]
     X_test, y_test = test_data.drop(target_name, axis=1), test_data[target_name]
-    lr = LogisticRegression(random_state=42)
-    lr.fit(X, y)
-    prediction = lr.predict(X_test)
-    accuracy = accuracy_score(y_test, prediction)
-    precision = precision_score(y_test, prediction)
-    recall = recall_score(y_test, prediction)
-    roc_auc = roc_auc_score(y_test, prediction)
-    f1 = f1_score(y_test, prediction)
 
-    mlflow.log_metric("Accuracy", accuracy)
-    mlflow.log_metric("Precision", precision)
-    mlflow.log_metric("Recall", recall)
-    mlflow.log_metric("ROC_AUC", roc_auc)
-    mlflow.log_metric("F1_score", f1)
+    with mlflow.start_run(experiment_id=mlflow_experiment_id):
+        lr = LogisticRegression(random_state=42)
+        lr.fit(X, y)
+        prediction = lr.predict(X_test)
+        accuracy = accuracy_score(y_test, prediction)
+        precision = precision_score(y_test, prediction)
+        recall = recall_score(y_test, prediction)
+        roc_auc = roc_auc_score(y_test, prediction)
+        f1 = f1_score(y_test, prediction)
+
+        mlflow.log_metric("Accuracy", accuracy)
+        mlflow.log_metric("Precision", precision)
+        mlflow.log_metric("Recall", recall)
+        mlflow.log_metric("ROC_AUC", roc_auc)
+        mlflow.log_metric("F1_score", f1)
+
+        # mlflow.end_run()
 
     # print("Testing metrics")
     output_path = os.path.join(output_path, model_name)
