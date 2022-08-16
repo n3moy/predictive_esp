@@ -9,8 +9,6 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_a
 
 DROP_COLS = ["time", "event_id"]
 TEST_PATH = "/c/py/predictive_esp/data/processed/test.csv"
-mlflow.set_tracking_uri("http://localhost:5000")
-mlflow_experiment_id = 1
 
 
 @click.command()
@@ -56,7 +54,11 @@ def train_lr(
     X, y = train_data.drop(target_name, axis=1), train_data[target_name]
     X_test, y_test = test_data.drop(target_name, axis=1), test_data[target_name]
 
-    with mlflow.start_run(experiment_id=mlflow_experiment_id):
+    mlflow.set_tracking_uri("http://localhost:5000")
+    mlflow_experiment_id = "first_experiment"
+    mlflow.set_experiment(mlflow_experiment_id)
+
+    with mlflow.start_run():
         lr = LogisticRegression(random_state=42)
         lr.fit(X, y)
         prediction = lr.predict(X_test)

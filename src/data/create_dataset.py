@@ -20,17 +20,16 @@ def join_data(
     """
     This function joins all datasets in 'list_data' into one pd.DataFrame and splits it in train and test
     """
-    print("BEGIN" + "*"*8)
     list_data = os.listdir(input_path)
     config = yaml.safe_load(open(CONFIG_PATH))["create_dataset"]
     data_cols = config["columns"]
     joined_df = pd.DataFrame(columns=data_cols)
-    print("BEGIN CYCLE" + "*" * 8)
+
     for df_name in list_data:
         df_path = os.path.join(input_path, df_name)
         df = pd.read_csv(df_path)
         joined_df = pd.concat([joined_df, df], axis=0)
-    print("END CYCLE" + "*" * 8)
+
     joined_df = joined_df.reset_index(drop=True)
     joined_df["time"] = pd.to_datetime(joined_df["time"])
     joined_df = joined_df.sort_values(by="time", ascending=True)
@@ -46,7 +45,7 @@ def join_data(
             & (joined_df["time"].dt.date <= pd.Timestamp(f"2021-06-30"))
         )
     ]
-    print(f"Joined data shape : {joined_df.shape}")
+    # print(f"Joined data shape : {joined_df.shape}")
     test_indices = test_df.index
     train_df = joined_df.drop(test_indices, axis=0)
     # train_df = train_df.loc[
