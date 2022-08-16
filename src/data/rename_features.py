@@ -7,7 +7,9 @@ import pandas as pd
 
 
 def rename_data_features(
-        input_data: pd.DataFrame, feature_name: str, columns: list
+    input_data: pd.DataFrame,
+    feature_name: str,
+    columns: list
 ) -> pd.DataFrame:
     """
     Basically converts camelCase names into snake_case
@@ -46,7 +48,10 @@ def rename_data_features(
 @click.argument("update_file", type=click.Path())
 @click.argument("verbose", type=click.BOOL)
 def features_renaming(
-        input_path: str, output_path: str, update_file: str, verbose: bool = False
+    input_path: str,
+    output_path: str,
+    update_file: str,
+    verbose: bool = False
 ) -> None:
     """
     From input directory imports all the files containing 2 columns,
@@ -79,9 +84,9 @@ def features_renaming(
                 print(f"Saving a file {filename} into directory\n{save_path}")
             csv_file.to_csv(save_path, index=False)
 
-    with open(update_file, "a") as f:
-        upd_date = datetime.utcfromtimestamp(time.time()).strftime("%Y-%m-%d %H:%M:%S")
-        f.write(f"\nUpdate at {upd_date}")
+    # with open(update_file, "a") as f:
+    #     upd_date = datetime.utcfromtimestamp(time.time()).strftime("%Y-%m-%d %H:%M:%S")
+    #     f.write(f"\nUpdate at {upd_date}")
 
 
 if __name__ == "__main__":
