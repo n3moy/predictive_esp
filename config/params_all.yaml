@@ -13,6 +13,10 @@ build_features:
   # input_path events_path output_path target_window verbose
   CLI_params: "/c/py/predictive_esp/data/interim/joined /c/py/predictive_esp/data/raw/events /c/py/predictive_esp/data/interim/featured 7 False"
 
+resample_data:
+  begin_time: "2021-01-01"
+  end_time: "2021-12-31"
+
 predict:
   SEED: 10
   predictions_name: "predictions.csv"
