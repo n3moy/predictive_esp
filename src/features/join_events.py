@@ -12,7 +12,7 @@ def join_events_to_data(
     input_path: str,
     events_path: str,
     output_path: str
-) -> pd.DataFrame:
+) -> None:
     """
     This function assigns multiple events as marks into dataset based on startDate and endDate in events dataframe
 
@@ -38,7 +38,11 @@ def join_events_to_data(
             mask = (data_file.index >= start_date) & (data_file.index <= end_date)
             data_file.loc[mask, "event_id"] = ev_id
 
-        save_path = os.path.join(output_path, filename)
+        new_name = filename[:-4] + "_events.csv"
+        save_path = os.path.join(folder_path, new_name)
         data_file.to_csv(save_path)
 
+
+if __name__ == "__main__":
+    join_events_to_data()
 

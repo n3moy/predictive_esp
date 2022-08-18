@@ -23,6 +23,10 @@ def merge(
     # Train or test, we can confirm that by folder name
     folder_to_save = input_path.split("/")[-1]
     folder_path = os.path.join(output_path, folder_to_save)
+
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
     joined_data = pd.DataFrame(index=common_idx)
 
     for dirname, _, filenames in os.walk(input_path):
@@ -42,8 +46,10 @@ def merge(
         # Last folder name = well id (TMP)
         well_id = dirname.split("/")[-1]
         folder_path = os.path.join(folder_path, well_id)
-        save_filename = f"joined_{well_id}.csv"
+        save_filename = f"merged_{well_id}.csv"
         save_path = os.path.join(folder_path, save_filename)
         joined_data.to_csv(save_path)
 
 
+if __name__ == "__main__":
+    merge()
