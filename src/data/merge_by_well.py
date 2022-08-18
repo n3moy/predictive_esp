@@ -20,7 +20,7 @@ def merge(
     end_time = pd.to_datetime(["end_time"])
     common_idx = pd.date_range(begin_time, end_time)
 
-    # Train or test, we can confirm that by parent folder name
+    # Train or test, we can confirm that by folder name
     folder_to_save = input_path.split("/")[-1]
     folder_path = os.path.join(output_path, folder_to_save)
     joined_data = pd.DataFrame(index=common_idx)
