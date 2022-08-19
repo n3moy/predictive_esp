@@ -32,24 +32,6 @@ def train_lr(
     """
     train_data = pd.read_csv(train_path)
     test_data = pd.read_csv(TEST_PATH)
-    train_data = train_data.drop(DROP_COLS, axis=1)
-    train_data = train_data.replace(float("inf"), 0)
-    test_data = test_data.replace(float("inf"), 0)
-    cols = train_data.columns
-    row_number = train_data.shape[0]
-
-    for col in cols:
-        count_nan = train_data[col].isna().sum()
-        if count_nan >= row_number//2:
-            train_data = train_data.drop(col, axis=1)
-            DROP_COLS.append(col)
-
-    test_data = test_data.drop(DROP_COLS, axis=1)
-
-    train_data = train_data.select_dtypes(include=[int, float])
-    train_data = train_data.dropna()
-    test_data = test_data.select_dtypes(include=[int, float])
-    test_data = test_data.dropna()
 
     X, y = train_data.drop(target_name, axis=1), train_data[target_name]
     X_test, y_test = test_data.drop(target_name, axis=1), test_data[target_name]
