@@ -29,7 +29,7 @@ join_events:
 
 expand_target:
   src_dir: "/c/py/predictive_esp/src/features/expand_target.py"
-  CLI_params: ""
+  CLI_params: "/c/py/predictive_esp/data/interim/joined_events/train /c/py/predictive_esp/data/interim/expanded_target 7"
 
 predict:
   SEED: 10

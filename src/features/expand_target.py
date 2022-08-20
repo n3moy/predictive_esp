@@ -7,8 +7,8 @@ from pandas.api.types import is_datetime64_any_dtype as is_datetime
 
 
 @click.command()
-@click.argument("input_path", type=click.PATH())
-@click.argument("output_path", type=click.PATH())
+@click.argument("input_path", type=click.Path())
+@click.argument("output_path", type=click.Path())
 @click.argument("target_window", type=click.INT)
 def expand_target(
     input_path: str,
@@ -52,7 +52,7 @@ def expand_target(
         data_file["stable"] = np.where((data_file["time_to_failure"] >= 20), 1, 0)
 
         save_path = os.path.join(folder_path, filename)
-        data_file.to_csv(save_path)
+        data_file.to_csv(save_path, index=False)
 
 
 if __name__ == "__main__":
