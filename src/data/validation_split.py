@@ -8,7 +8,11 @@ import click
 @click.argument("output_path", type=click.Path())
 @click.argument("valid_size", type=click.FLOAT())
 @click.argument("random_seed", type=click.INT())
-def validation_split(input_data: pd.DataFrame, valid_size: float, random_state: int = None):
+def validation_split(
+    input_data: pd.DataFrame,
+    valid_size: float,
+    random_state: int = None
+) -> list:
     if random_state:
         np.random.seed(random_state)
     data = input_data.copy()

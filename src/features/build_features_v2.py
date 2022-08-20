@@ -11,8 +11,8 @@ COLS_TO_CALC = None
 
 # This func should be used after joining data by well
 @click.command()
-@click.argument("input_path", type=click.PATH())
-@click.argument("output_path", type=click.PATH())
+@click.argument("input_path", type=click.Path())
+@click.argument("output_path", type=click.Path())
 def build_features(
     input_path: str,
     output_path: str

@@ -1,6 +1,4 @@
 import os
-import time
-from datetime import datetime
 
 import click
 import pandas as pd
@@ -45,12 +43,10 @@ def rename_data_features(
 @click.command()
 @click.argument("input_path", type=click.Path())
 @click.argument("output_path", type=click.Path())
-@click.argument("update_file", type=click.Path())
 @click.argument("verbose", type=click.BOOL)
 def features_renaming(
     input_path: str,
     output_path: str,
-    update_file: str,
     verbose: bool = False
 ) -> None:
     """
@@ -60,15 +56,19 @@ def features_renaming(
     Saves all renamed files into './data/interim/renamed'
 
     """
+
     for dirname, _, filenames in os.walk(input_path):
         if filenames:
-            out_path = output_path + "\\" + dirname[-1]
+            out_path = os.path.join(output_path, dirname[-1])
+
             if not os.path.exists(out_path):
                 os.makedirs(out_path)
+
         for filename in filenames:
             file_path = os.path.join(dirname, filename)
             csv_file = pd.read_csv(file_path)
             cols = csv_file.columns
+
             if len(cols) != 2:
                 if verbose:
                     print(f"Skipping file {file_path}\nFile has more than 2 columns")
@@ -80,6 +80,7 @@ def features_renaming(
                 columns=cols,
             )
             save_path = os.path.join(out_path, filename)
+
             if verbose:
                 print(f"Saving a file {filename} into directory\n{save_path}")
             csv_file.to_csv(save_path, index=False)

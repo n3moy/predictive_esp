@@ -40,7 +40,7 @@ def expand_target(
         data_file["fail_range"] = data_file["failure_date"] - data_file["time"]
         data_file["time_to_failure"] = data_file["fail_range"] / np.timedelta64(1, "D")
         data_file.loc[data_file["failure_date"] == data_file["time"].max(), "time_to_failure"] = 999
-        # I use window between 7 and 3 days before failure
+        # I use window between 7 and 0 days before failure
         data_file["failure_target"] = np.where(
             ((data_file["time_to_failure"] <= target_window) & (data_file["time_to_failure"] > 0)),
             1,
