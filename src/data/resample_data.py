@@ -49,12 +49,13 @@ def resample_data(
             data_file = data_file[data_file.index <= end_time]
             new_idx = pd.date_range(begin_time, end_time, freq="2min")
             print("Starting interpolation")
-            data_file = data_file.reindex(new_idx, method="nearest", limit=1).interpolate(method="spline", order=2)
+            # .interpolate(method="spline", order=2)
+            data_file = data_file.reindex(new_idx, method="nearest", limit=1).interpolate()
             data_file = data_file.reset_index().rename(columns={"index": "time"})
 
             save_path = os.path.join(well_path, filename)
             print(f"Saved to\n{save_path}")
-            data_file.to_csv(save_path)
+            data_file.to_csv(save_path, index=False)
 
 
 if __name__ == "__main__":

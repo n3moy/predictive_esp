@@ -19,6 +19,18 @@ resample_data:
   src_dir: "/c/py/predictive_esp/src/data/resample_data.py"
   CLI_params: "/c/py/predictive_esp/data/interim/train_test/train /c/py/predictive_esp/data/interim/resampled"
 
+merge_by_well:
+  src_dir: "/c/py/predictive_esp/src/data/merge_by_well.py"
+  CLI_params: "/c/py/predictive_esp/data/interim/resampled/train /c/py/predictive_esp/data/interim/merged_wells"
+
+join_events:
+  src_dir: "/c/py/predictive_esp/src/features/join_events.py"
+  CLI_params: "/c/py/predictive_esp/data/interim/merged_wells/train /c/py/predictive_esp/data/raw/events /c/py/predictive_esp/data/interim/joined_events"
+
+expand_target:
+  src_dir: "/c/py/predictive_esp/src/features/expand_target.py"
+  CLI_params: ""
+
 predict:
   SEED: 10
   predictions_name: "predictions.csv"
