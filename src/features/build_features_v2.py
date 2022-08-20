@@ -33,7 +33,7 @@ def build_features(
     for filename in os.listdir(input_path):
         file_path = os.path.join(input_path, filename)
         data_file = pd.read_csv(file_path, parse_dates=["time"])
-        data_file = data_file.set_inde("time")
+        data_file = data_file.set_index("time")
         data_file = FeatureCalculation.reduce_mem_usage(data_file)
 
         # Current and voltage unbalance
