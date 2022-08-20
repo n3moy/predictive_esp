@@ -26,38 +26,66 @@ pipelines = {
 }
 
 with DAG(
-    "train",
+    "preprocess",
     default_args=default_args,
-    description="From raw to processed",
+    description="From raw data to processed data",
     schedule_interval=pipelines["create_dataset"]["schedule"],
     catchup=False
 ) as train_dag:
+    tasks_params = yaml.safe_load(open(CONFIG_PATH))
 
-    t1_id = "build_features"
-    t1_params = yaml.safe_load(open(CONFIG_PATH))[t1_id]
-    t1_script = t1_params["src_dir"]
-    t1_args = t1_params["CLI_params"]
+    t1_name = "train_test_split"
     t1 = BashOperator(
-        task_id=t1_id,
-        bash_command=f"python3 {t1_script} {t1_args}"
+        task_id=t1_name,
+        bash_command=f"python3 {tasks_params[t1_name]['src_params']} {tasks_params[t1_name]['CLI_params']}"
     )
 
-    t2_id = "create_dataset"
-    t2_params = yaml.safe_load(open(CONFIG_PATH))[t2_id]
-    t2_script = t2_params["src_dir"]
-    t2_args = t2_params["CLI_params"]
+    t2_name = "resample_data"
     t2 = BashOperator(
-        task_id=t2_id,
-        bash_command=f"python3 {t2_script} {t2_args}"
+        task_id=t2_name,
+        bash_command=f"python3 {tasks_params[t2_name]['src_params']} {tasks_params[t2_name]['CLI_params']}"
     )
 
-    t3_id = "train"
-    t3_params = yaml.safe_load(open(CONFIG_PATH))[t3_id]
-    t3_script = t3_params["src_dir"]
-    t3_args = t3_params["CLI_params"]
-    train_task = BashOperator(
-        task_id=t3_id,
-        bash_command=f"python3 {t3_script} {t3_args}"
+    t3_name = "merge_by_well"
+    t3 = BashOperator(
+        task_id=t3_name,
+        bash_command=f"python3 {tasks_params[t3_name]['src_params']} {tasks_params[t3_name]['CLI_params']}"
+    )
+
+    t4_name = "join_events"
+    t4 = BashOperator(
+        task_id=t4_name,
+        bash_command=f"python3 {tasks_params[t4_name]['src_params']} {tasks_params[t4_name]['CLI_params']}"
+    )
+
+    t5_name = "expand_target"
+    t5 = BashOperator(
+        task_id=t5_name,
+        bash_command=f"python3 {tasks_params[t5_name]['src_params']} {tasks_params[t5_name]['CLI_params']}"
+    )
+
+    t6_name = "build_features"
+    t6 = BashOperator(
+        task_id=t6_name,
+        bash_command=f"python3 {tasks_params[t6_name]['src_params']} {tasks_params[t6_name]['CLI_params']}"
+    )
+
+    t7_name = "merge"
+    t7 = BashOperator(
+        task_id=t7_name,
+        bash_command=f"python3 {tasks_params[t7_name]['src_params']} {tasks_params[t7_name]['CLI_params']}"
+    )
+
+    t8_name = "preprocess"
+    t8 = BashOperator(
+        task_id=t8_name,
+        bash_command=f"python3 {tasks_params[t8_name]['src_params']} {tasks_params[t8_name]['CLI_params']}"
+    )
+
+    t9_name = "create_dataset"
+    t9 = BashOperator(
+        task_id=t8_name,
+        bash_command=f"python3 {tasks_params[t9_name]['src_params']} {tasks_params[t9_name]['CLI_params']}"
     )
 
     inter_task_1 = ExternalTaskMarker(
@@ -66,7 +94,7 @@ with DAG(
         external_task_id="inter_task_2"
     )
 
-    t1 >> t2 >> train_task >> inter_task_1
+    t1 >> t2 >> t3 >> [[t4 >> t5], t6] >> t7 >> t8 >> t9
 
 
 with DAG(

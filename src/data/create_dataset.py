@@ -35,9 +35,6 @@ def join_data(
         joined_df = pd.concat([joined_df, data_file], axis=0)
 
     joined_df = joined_df.reset_index(drop=True)
-    # joined_df["time"] = pd.to_datetime(joined_df["time"])
-    # joined_df = joined_df.sort_values(by="time", ascending=True)
-
     new_name = FILENAMES[folder_to_save]
     save_path = os.path.join(folder_path, new_name)
     joined_df.to_csv(save_path, index=False)

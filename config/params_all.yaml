@@ -1,3 +1,38 @@
+train_test_split:
+  src_dir: "/c/py/predictive_esp/src/data/train_test_split.py"
+  CLI_params: "/c/py/predictive_esp/data/interim/renamed /c/py/predictive_esp/data/interim/train_test 2"
+
+resample_data:
+  begin_time: "01-01-2021"
+  end_time: "31-12-2021"
+  src_dir: "/c/py/predictive_esp/src/data/resample_data.py"
+  CLI_params: "/c/py/predictive_esp/data/interim/train_test/train /c/py/predictive_esp/data/interim/resampled"
+
+merge_by_well:
+  src_dir: "/c/py/predictive_esp/src/data/merge_by_well.py"
+  CLI_params: "/c/py/predictive_esp/data/interim/resampled/train /c/py/predictive_esp/data/interim/merged_wells"
+
+join_events:
+  src_dir: "/c/py/predictive_esp/src/features/join_events.py"
+  CLI_params: "/c/py/predictive_esp/data/interim/merged_wells/train /c/py/predictive_esp/data/raw/events /c/py/predictive_esp/data/interim/joined_events"
+
+expand_target:
+  src_dir: "/c/py/predictive_esp/src/features/expand_target.py"
+  CLI_params: "/c/py/predictive_esp/data/interim/joined_events/train /c/py/predictive_esp/data/interim/expanded_target 7"
+
+build_features:
+  src_dir: "/c/py/predictive_esp/src/features/build_features_v2.py"
+  # input_path events_path output_path target_window verbose
+  CLI_params: "/c/py/predictive_esp/data/interim/expanded_target/train /c/py/predictive_esp/data/interim/featured"
+
+merge:
+  src_dir: "/c/py/predictive_esp/src/data/merge_features.py"
+  CLI_params: "/c/py/predictive_esp/data/interim/featured/train /c/py/predictive_esp/data/interim/expanded_target/train /c/py/predictive_esp/data/interim/merged_features"
+
+preprocess:
+  src_dir: "/c/py/predictive_esp/src/data/preprocessing.py"
+  CLI_params: "/c/py/predictive_esp/data/interim/merged_features/train /c/py/predictive_esp/data/interim/preprocessed_by_well"
+
 create_dataset:
   columns: ['active_power', 'electricity_gage', 'frequency', 'gas_rate',
        'intake_pressure', 'isolation', 'line_pressure', 'liquid_rate',
@@ -33,37 +68,6 @@ create_dataset:
   src_dir: "/c/py/predictive_esp/src/data/create_dataset.py"
   # input_path output_path
   CLI_params: "/c/py/predictive_esp/data/interim/preprocessed_by_well/train /c/py/predictive_esp/data/processed"
-
-build_features:
-  src_dir: "/c/py/predictive_esp/src/features/build_features_v2.py"
-  # input_path events_path output_path target_window verbose
-  CLI_params: "/c/py/predictive_esp/data/interim/expanded_target/train /c/py/predictive_esp/data/interim/featured"
-
-resample_data:
-  begin_time: "01-01-2021"
-  end_time: "31-12-2021"
-  src_dir: "/c/py/predictive_esp/src/data/resample_data.py"
-  CLI_params: "/c/py/predictive_esp/data/interim/train_test/train /c/py/predictive_esp/data/interim/resampled"
-
-merge_by_well:
-  src_dir: "/c/py/predictive_esp/src/data/merge_by_well.py"
-  CLI_params: "/c/py/predictive_esp/data/interim/resampled/train /c/py/predictive_esp/data/interim/merged_wells"
-
-join_events:
-  src_dir: "/c/py/predictive_esp/src/features/join_events.py"
-  CLI_params: "/c/py/predictive_esp/data/interim/merged_wells/train /c/py/predictive_esp/data/raw/events /c/py/predictive_esp/data/interim/joined_events"
-
-expand_target:
-  src_dir: "/c/py/predictive_esp/src/features/expand_target.py"
-  CLI_params: "/c/py/predictive_esp/data/interim/joined_events/train /c/py/predictive_esp/data/interim/expanded_target 7"
-
-merge:
-  src_dir: "/c/py/predictive_esp/src/data/merge_features.py"
-  CLI_params: "/c/py/predictive_esp/data/interim/featured/train /c/py/predictive_esp/data/interim/expanded_target/train /c/py/predictive_esp/data/interim/merged_features"
-
-preprocess:
-  src_dir: "/c/py/predictive_esp/src/data/preprocessing.py"
-  CLI_params: "/c/py/predictive_esp/data/interim/merged_features/train /c/py/predictive_esp/data/interim/preprocessed_by_well"
 
 predict:
   SEED: 10
