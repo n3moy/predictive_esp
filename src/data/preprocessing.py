@@ -7,8 +7,8 @@ DROP_COLS = []
 
 
 @click.command()
-@click.argument("input_path", type=click.PATH())
-@click.argument("output_path", type=click.PATH())
+@click.argument("input_path", type=click.Path())
+@click.argument("output_path", type=click.Path())
 def preprocess(
     input_path: str,
     output_path: str
@@ -30,7 +30,7 @@ def preprocess(
 
         for col in cols:
             count_nan = data_file[col].isna().sum()
-            if count_nan >= row_number//2:
+            if count_nan >= row_number // 2:
                 data_file = data_file.drop(col, axis=1)
                 DROP_COLS.append(col)
 

@@ -5,9 +5,9 @@ import pandas as pd
 
 
 @click.command()
-@click.argument("featured_path", type=click.PATH())
-@click.argument("expanded_path", type=click.PATH())
-@click.argument("output_path", type=click.PATH())
+@click.argument("featured_path", type=click.Path())
+@click.argument("expanded_path", type=click.Path())
+@click.argument("output_path", type=click.Path())
 def merge_features(
     featured_path: str,
     expanded_path: str,
