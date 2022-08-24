@@ -1,6 +1,6 @@
 train_test_split:
   src_dir: "/c/py/predictive_esp/src/data/train_test_split.py"
-  CLI_params: "/c/py/predictive_esp/data/interim/renamed /c/py/predictive_esp/data/interim/train_test 2"
+  CLI_params: "/c/py/predictive_esp/data/interim/renamed /c/py/predictive_esp/data/interim/train_test 3"
 
 resample_data:
   begin_time: "01-01-2021"
@@ -82,4 +82,4 @@ train:
   cross_val:
     test_size: 0.3
   # train_path output_path target_name model_name
-  CLI_params: "/c/py/predictive_esp/data/processed/train.csv /c/py/predictive_esp/models \"failure_target\" \"lr_model.pkl\""
+  CLI_params: "/c/py/predictive_esp/data/processed/train.csv /c/py/predictive_esp/models/lr_model.pkl \"failure_target\""

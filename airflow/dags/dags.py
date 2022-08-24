@@ -22,8 +22,8 @@ CONFIG_PATH = os.path.join("/c/py/predictive_esp/config/params_all.yaml")
 pipelines = {
     "train": {"schedule": "5 * * * *"},
     "predict": {"schedule": "* * * * *"},
-    "build_features": {"schedule": "5 * * * *"},
-    "create_dataset": {"schedule": "5 * * * *"}
+    "extract_data_dag": {"schedule": "5 * * * *"},
+    "preprocess_dag": {"schedule": "5 * * * *"}
 }
 
 
@@ -31,7 +31,7 @@ with DAG(
     "extract_data_dag",
     default_args=default_args,
     description="From raw data to renamed and split",
-    schedule_interval="5 * * * *",
+    schedule_interval=pipelines["extract_data_dag"]["schedule"],
     catchup=False
 ) as extract_data_dag:
     tasks_params = yaml.safe_load(open(CONFIG_PATH))
@@ -42,9 +42,9 @@ with DAG(
         bash_command=f"python3 {tasks_params[t1_name]['src_dir']} {tasks_params[t1_name]['CLI_params']}"
     )
     maker_extract = ExternalTaskMarker(
-        task_id="inter_task_extract",
+        task_id="maker_extract",
         external_dag_id="preprocess_dag",
-        external_task_id="inter_task_preprocess"
+        external_task_id="sensor_preprocess"
     )
 
     maker_extract.set_upstream(t1)
@@ -54,13 +54,13 @@ with DAG(
     "preprocess_dag",
     default_args=default_args,
     description="From renamed data to processed data",
-    schedule_interval=pipelines["create_dataset"]["schedule"],
+    schedule_interval=pipelines["preprocess_dag"]["schedule"],
     catchup=False
 ) as preprocess_dag:
     tasks_params = yaml.safe_load(open(CONFIG_PATH))
 
     sensor_preprocess = ExternalTaskSensor(
-        task_id="inter_task_preprocess",
+        task_id="sensor_preprocess",
         external_dag_id=extract_data_dag.dag_id,
         external_task_id=maker_extract.task_id,
         allowed_states=["success"],
@@ -71,42 +71,50 @@ with DAG(
     t1_name = "resample_data"
     t1 = BashOperator(
         task_id=t1_name,
-        bash_command=f"python3 {tasks_params[t1_name]['src_dir']} {tasks_params[t1_name]['CLI_params']}"
+        bash_command=f"python3 {tasks_params[t1_name]['src_dir']} {tasks_params[t1_name]['CLI_params']}",
+        trigger_rule="all_success"
     )
     t2_name = "merge_by_well"
     t2 = BashOperator(
         task_id=t2_name,
-        bash_command=f"python3 {tasks_params[t2_name]['src_dir']} {tasks_params[t2_name]['CLI_params']}"
+        bash_command=f"python3 {tasks_params[t2_name]['src_dir']} {tasks_params[t2_name]['CLI_params']}",
+        trigger_rule="all_success"
     )
     t3_name = "join_events"
     t3 = BashOperator(
         task_id=t3_name,
-        bash_command=f"python3 {tasks_params[t3_name]['src_dir']} {tasks_params[t3_name]['CLI_params']}"
+        bash_command=f"python3 {tasks_params[t3_name]['src_dir']} {tasks_params[t3_name]['CLI_params']}",
+        trigger_rule="all_success"
     )
     t4_name = "expand_target"
     t4 = BashOperator(
         task_id=t4_name,
-        bash_command=f"python3 {tasks_params[t4_name]['src_dir']} {tasks_params[t4_name]['CLI_params']}"
+        bash_command=f"python3 {tasks_params[t4_name]['src_dir']} {tasks_params[t4_name]['CLI_params']}",
+        trigger_rule="all_success"
     )
     t5_name = "build_features"
     t5 = BashOperator(
         task_id=t5_name,
-        bash_command=f"python3 {tasks_params[t5_name]['src_dir']} {tasks_params[t5_name]['CLI_params']}"
+        bash_command=f"python3 {tasks_params[t5_name]['src_dir']} {tasks_params[t5_name]['CLI_params']}",
+        trigger_rule="all_success"
     )
     t6_name = "merge"
     t6 = BashOperator(
         task_id=t6_name,
-        bash_command=f"python3 {tasks_params[t6_name]['src_dir']} {tasks_params[t6_name]['CLI_params']}"
+        bash_command=f"python3 {tasks_params[t6_name]['src_dir']} {tasks_params[t6_name]['CLI_params']}",
+        trigger_rule="all_success"
     )
     t7_name = "clear_nulls"
     t7 = BashOperator(
         task_id=t7_name,
-        bash_command=f"python3 {tasks_params[t7_name]['src_dir']} {tasks_params[t7_name]['CLI_params']}"
+        bash_command=f"python3 {tasks_params[t7_name]['src_dir']} {tasks_params[t7_name]['CLI_params']}",
+        trigger_rule="all_success"
     )
     t8_name = "create_dataset"
     t8 = BashOperator(
         task_id=t8_name,
-        bash_command=f"python3 {tasks_params[t8_name]['src_dir']} {tasks_params[t8_name]['CLI_params']}"
+        bash_command=f"python3 {tasks_params[t8_name]['src_dir']} {tasks_params[t8_name]['CLI_params']}",
+        trigger_rule="all_success"
     )
     maker_preprocess = ExternalTaskMarker(
         task_id="maker_preprocess",
@@ -132,7 +140,7 @@ with DAG(
     "train_dag",
     default_args=default_args,
     description="From processed data to trained model",
-    schedule_interval=pipelines["pipelines"]["schedule"],
+    schedule_interval=pipelines["train"]["schedule"],
     catchup=False
 ) as train_dag:
     train_config = yaml.safe_load(open(CONFIG_PATH))["train"]
@@ -149,7 +157,6 @@ with DAG(
         task_id=t1_name,
         bash_command=f"python3 {train_config['src_dir']} {train_config['CLI_params']}"
     )
-
     maker_train = ExternalTaskMarker(
         task_id="maker_train",
         external_dag_id="predict_dag",
@@ -169,7 +176,7 @@ with DAG(
 
     sensor_predict = ExternalTaskSensor(
         task_id="sensor_predict",
-        external_dag_id=preprocess_dag.dag_id,
+        external_dag_id=train_dag.dag_id,
         external_task_id=maker_train.task_id,
         allowed_states=['success'],
         failed_states=['failed', 'skipped'],
