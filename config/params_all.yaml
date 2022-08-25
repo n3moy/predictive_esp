@@ -83,3 +83,7 @@ train:
     test_size: 0.3
   # train_path output_path target_name model_name
   CLI_params: "/c/py/predictive_esp/data/processed/train.csv /c/py/predictive_esp/models/lr_model.pkl \"failure_target\""
+
+evaluate:
+  src_dir: ""
+  CLI_params: ""
