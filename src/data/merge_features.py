@@ -13,11 +13,6 @@ def merge_features(
     expanded_path: str,
     output_path: str
 ) -> None:
-    folder_to_save = featured_path.split("/")[-1]
-    folder_path = os.path.join(output_path, folder_to_save)
-
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
 
     featured_filenames = os.listdir(featured_path)
     expanded_filenames = os.listdir(expanded_path)
@@ -34,7 +29,7 @@ def merge_features(
         f_data_file["event_id"] = e_data_file["event_id"]
 
         filename = "full_merged_" + e_filename[-5:]
-        save_path = os.path.join(folder_path, filename)
+        save_path = os.path.join(output_path, filename)
         f_data_file.to_csv(save_path, index=False)
 
 

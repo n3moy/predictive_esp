@@ -19,12 +19,6 @@ def join_data(
     This function joins all datasets in 'list_data' into one pd.DataFrame and splits it in train and test
     """
     # Train or test, we can confirm that by folder name
-    folder_to_save = input_path.split("/")[-1]
-    folder_path = os.path.join(output_path, folder_to_save)
-
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
-
     config = yaml.safe_load(open(CONFIG_PATH))["create_dataset"]
     data_cols = config["columns"]
     joined_df = pd.DataFrame(columns=data_cols)
@@ -35,9 +29,7 @@ def join_data(
         joined_df = pd.concat([joined_df, data_file], axis=0)
 
     joined_df = joined_df.reset_index(drop=True)
-    new_name = FILENAMES[folder_to_save]
-    save_path = os.path.join(folder_path, new_name)
-    joined_df.to_csv(save_path, index=False)
+    joined_df.to_csv(output_path, index=False)
 
 
 if __name__ == "__main__":

@@ -1,9 +1,14 @@
+import os.path
+
 import click
 import joblib
 import mlflow
 import pandas as pd
 import numpy as np
 from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_auc_score, f1_score
+
+
+FILENAME = "evaluate_preds.csv"
 
 
 def evaluate_results(
@@ -108,9 +113,11 @@ def evaluate(
             artifact_path="lr_model",
             registered_model_name="default_lr_model"
         )
+
         mlflow.end_run()
 
-    prediction.to_csv(output_path, index=False)
+    save_path = os.path.join(output_path, FILENAME)
+    prediction.to_csv(save_path, index=False)
 
 
 if __name__ == "__main__":

@@ -24,11 +24,6 @@ def build_features(
     """
     # Train or test, we can confirm that by folder name
     global COLS_TO_CALC
-    folder_to_save = input_path.split("/")[-1]
-    folder_path = os.path.join(output_path, folder_to_save)
-
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
 
     for filename in os.listdir(input_path):
         file_path = os.path.join(input_path, filename)
@@ -65,7 +60,7 @@ def build_features(
             (data_file["current"] == 0), 0, data_file["voltage"].div(data_file["current"], axis=0)
         )
 
-        # Пробные признаки, все что есть
+        # Testing all ideas to choose best ones
         data_file["power_A"] = data_file["op_current1"] * data_file["voltageAB"] / 1000
         data_file["power_B"] = data_file["op_current2"] * data_file["voltageBC"] / 1000
         data_file["power_C"] = data_file["op_current3"] * data_file["voltageCA"] / 1000
@@ -124,7 +119,7 @@ def build_features(
             data_file[f"{col}_root"] = np.power(data_file[col], 0.5)
 
         new_name = filename[:-4] + "_featured.csv"
-        save_path = os.path.join(folder_path, new_name)
+        save_path = os.path.join(output_path, new_name)
         data_file.to_csv(save_path)
 
         # cols_to_drop = [

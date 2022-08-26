@@ -1,5 +1,5 @@
 import os
-from random import randint
+# from random import randint
 
 import click
 import pandas as pd
@@ -19,7 +19,8 @@ def split(
 ) -> None:
     test_output_path = os.path.join(output_path, TEST_FOLDER)
     train_output_path = os.path.join(output_path, TRAIN_FOLDER)
-    start_test_month = randint(1, 12-window_size)
+    # start_test_month = randint(1, 12-window_size)
+    start_test_month = 9
 
     for dirname, _, filenames in os.walk(input_path):
         try:

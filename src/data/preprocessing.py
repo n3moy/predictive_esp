@@ -13,16 +13,11 @@ def preprocess(
     input_path: str,
     output_path: str
 ) -> None:
-    # Train or test, we can confirm that by folder name
-    folder_to_save = input_path.split("/")[-1]
-    folder_path = os.path.join(output_path, folder_to_save)
-
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
 
     for filename in os.listdir(input_path):
         file_path = os.path.join(input_path, filename)
         data_file = pd.read_csv(file_path, parse_dates=["time"])
+        data_file = data_file.set_index("time")
         data_file = data_file.drop(DROP_COLS, axis=1)
         data_file = data_file.replace(float("inf"), 0)
         cols = data_file.columns
@@ -38,8 +33,8 @@ def preprocess(
         data_file = data_file.dropna()
 
         new_name = filename[:-4] + "_preprocessed.csv"
-        save_path = os.path.join(folder_path, new_name)
-        data_file.to_csv(save_path, index=False)
+        save_path = os.path.join(output_path, new_name)
+        data_file.to_csv(save_path)
 
 
 if __name__ == "__main__":

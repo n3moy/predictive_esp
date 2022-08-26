@@ -19,12 +19,6 @@ def join_events_to_data(
     This function assigns multiple events as marks into dataset based on startDate and endDate in events dataframe
 
     """
-    # Train or test, we can confirm that by folder name
-    folder_to_save = input_path.split("/")[-1]
-    folder_path = os.path.join(output_path, folder_to_save)
-
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
 
     for filename in os.listdir(input_path):
         file_path = os.path.join(input_path, filename)
@@ -43,7 +37,7 @@ def join_events_to_data(
             data_file.loc[mask, "event_id"] = ev_id
 
         new_name = filename[:-5] + f"events_{well_id}.csv"
-        save_path = os.path.join(folder_path, new_name)
+        save_path = os.path.join(output_path, new_name)
         data_file.to_csv(save_path)
 
 

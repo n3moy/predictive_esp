@@ -13,18 +13,18 @@ TEST_PATH = "/c/py/predictive_esp/data/processed/train.csv"
 
 @click.command()
 @click.argument("train_path", type=click.Path())
-@click.argument("output_path", type=click.Path())
+@click.argument("model_path", type=click.Path())
 @click.argument("target_name", type=click.STRING)
 def train_lr(
     train_path: str,
-    output_path: str,
+    model_path: str,
     target_name: str,
 ) -> None:
     """
     Learns LogisticRegression model to find failures in data
     :param train_path:
     :param target_name:
-    :param output_path:
+    :param model_path:
     :return: lr_model.pkl
     """
     train_data = pd.read_csv(train_path)
@@ -35,7 +35,7 @@ def train_lr(
     lr.fit(X, y)
 
     # print("Testing metrics")
-    output_path = os.path.join(output_path)
+    output_path = os.path.join(model_path)
     joblib.dump(lr, output_path)
 
 

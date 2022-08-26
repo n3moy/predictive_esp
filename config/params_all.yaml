@@ -1,89 +1,46 @@
-train_test_split:
-  src_dir: "/c/py/predictive_esp/src/data/train_test_split.py"
-  CLI_params: "/c/py/predictive_esp/data/interim/renamed /c/py/predictive_esp/data/interim/train_test 3"
-
-resample_data:
-  begin_time: "01-01-2021"
-  end_time: "31-12-2021"
-  src_dir: "/c/py/predictive_esp/src/data/resample_data.py"
-  CLI_params: "/c/py/predictive_esp/data/interim/train_test/train /c/py/predictive_esp/data/interim/resampled"
-
-merge_by_well:
-  src_dir: "/c/py/predictive_esp/src/data/merge_by_well.py"
-  CLI_params: "/c/py/predictive_esp/data/interim/resampled/train /c/py/predictive_esp/data/interim/merged_wells"
-
-join_events:
-  src_dir: "/c/py/predictive_esp/src/features/join_events.py"
-  CLI_params: "/c/py/predictive_esp/data/interim/merged_wells/train /c/py/predictive_esp/data/raw/events /c/py/predictive_esp/data/interim/joined_events"
-
-expand_target:
-  src_dir: "/c/py/predictive_esp/src/features/expand_target.py"
-  CLI_params: "/c/py/predictive_esp/data/interim/joined_events/train /c/py/predictive_esp/data/interim/expanded_target 7"
-
-build_features:
-  src_dir: "/c/py/predictive_esp/src/features/build_features_v2.py"
-  # input_path events_path output_path target_window verbose
-  CLI_params: "/c/py/predictive_esp/data/interim/expanded_target/train /c/py/predictive_esp/data/interim/featured"
-
-merge:
-  src_dir: "/c/py/predictive_esp/src/data/merge_features.py"
-  CLI_params: "/c/py/predictive_esp/data/interim/featured/train /c/py/predictive_esp/data/interim/expanded_target/train /c/py/predictive_esp/data/interim/merged_features"
-
-clear_nulls:
-  src_dir: "/c/py/predictive_esp/src/data/preprocessing.py"
-  CLI_params: "/c/py/predictive_esp/data/interim/merged_features/train /c/py/predictive_esp/data/interim/preprocessed_by_well"
-
 create_dataset:
-  columns: ['active_power', 'electricity_gage', 'frequency', 'gas_rate',
-       'intake_pressure', 'isolation', 'line_pressure', 'liquid_rate',
-       'motor_temperature', 'oil_rate', 'op_current1', 'op_current2',
-       'op_current3', 'pump_temperature', 'reagent_rate', 'voltageAB',
-       'voltageBC', 'voltageCA', 'event_id', 'time_to_failure',
-       'failure_target', 'stable', 'voltage_unbalance', 'current_unbalance',
-       'voltage', 'current', 'resistance', 'power_A', 'power_B', 'power_C',
-       'theory_power', 'power_diff', 'power_lossesA', 'power_lossesB',
-       'power_lossesC', 'pressure_drop', 'theory_rate', 'rate_diff',
-       'freq_ratio', 'freq_squared_ratio', 'freq_cubic_ratio', 'skin',
-       'current_rol_mean_2520', 'current_rol_std_2520', 'current_rol_max_2520',
-       'current_rol_min_2520', 'current_spk_2520', 'current_deriv',
-       'current_squared', 'current_root', 'voltage_rol_mean_2520',
-       'voltage_rol_std_2520', 'voltage_rol_max_2520', 'voltage_rol_min_2520',
-       'voltage_spk_2520', 'voltage_deriv', 'voltage_squared', 'voltage_root',
-       'active_power_rol_mean_2520', 'active_power_rol_std_2520',
-       'active_power_rol_max_2520', 'active_power_rol_min_2520',
-       'active_power_spk_2520', 'active_power_deriv', 'active_power_squared',
-       'active_power_root', 'frequency_rol_mean_2520',
-       'frequency_rol_std_2520', 'frequency_rol_max_2520',
-       'frequency_rol_min_2520', 'frequency_spk_2520', 'frequency_deriv',
-       'frequency_squared', 'frequency_root', 'electricity_gage_rol_mean_2520',
-       'electricity_gage_rol_std_2520', 'electricity_gage_rol_max_2520',
-       'electricity_gage_rol_min_2520', 'electricity_gage_spk_2520',
-       'electricity_gage_deriv', 'electricity_gage_squared',
-       'electricity_gage_root', 'pump_temperature_rol_mean_2520',
-       'pump_temperature_rol_std_2520', 'pump_temperature_rol_max_2520',
-       'pump_temperature_rol_min_2520', 'pump_temperature_spk_2520',
-       'pump_temperature_deriv', 'pump_temperature_squared',
-       'pump_temperature_root', 'target_failure']
-
-  src_dir: "/c/py/predictive_esp/src/data/create_dataset.py"
-  # input_path output_path
-  CLI_params: "/c/py/predictive_esp/data/interim/preprocessed_by_well/train /c/py/predictive_esp/data/processed"
-
+    columns: ['active_power', 'electricity_gage', 'frequency', 'gas_rate',
+         'intake_pressure', 'isolation', 'line_pressure', 'liquid_rate',
+         'motor_temperature', 'oil_rate', 'op_current1', 'op_current2',
+         'op_current3', 'pump_temperature', 'reagent_rate', 'voltageAB',
+         'voltageBC', 'voltageCA', 'event_id', 'time_to_failure',
+         'failure_target', 'stable', 'voltage_unbalance', 'current_unbalance',
+         'voltage', 'current', 'resistance', 'power_A', 'power_B', 'power_C',
+         'theory_power', 'power_diff', 'power_lossesA', 'power_lossesB',
+         'power_lossesC', 'pressure_drop', 'theory_rate', 'rate_diff',
+         'freq_ratio', 'freq_squared_ratio', 'freq_cubic_ratio', 'skin',
+         'current_rol_mean_2520', 'current_rol_std_2520', 'current_rol_max_2520',
+         'current_rol_min_2520', 'current_spk_2520', 'current_deriv',
+         'current_squared', 'current_root', 'voltage_rol_mean_2520',
+         'voltage_rol_std_2520', 'voltage_rol_max_2520', 'voltage_rol_min_2520',
+         'voltage_spk_2520', 'voltage_deriv', 'voltage_squared', 'voltage_root',
+         'active_power_rol_mean_2520', 'active_power_rol_std_2520',
+         'active_power_rol_max_2520', 'active_power_rol_min_2520',
+         'active_power_spk_2520', 'active_power_deriv', 'active_power_squared',
+         'active_power_root', 'frequency_rol_mean_2520',
+         'frequency_rol_std_2520', 'frequency_rol_max_2520',
+         'frequency_rol_min_2520', 'frequency_spk_2520', 'frequency_deriv',
+         'frequency_squared', 'frequency_root', 'electricity_gage_rol_mean_2520',
+         'electricity_gage_rol_std_2520', 'electricity_gage_rol_max_2520',
+         'electricity_gage_rol_min_2520', 'electricity_gage_spk_2520',
+         'electricity_gage_deriv', 'electricity_gage_squared',
+         'electricity_gage_root', 'pump_temperature_rol_mean_2520',
+         'pump_temperature_rol_std_2520', 'pump_temperature_rol_max_2520',
+         'pump_temperature_rol_min_2520', 'pump_temperature_spk_2520',
+         'pump_temperature_deriv', 'pump_temperature_squared',
+         'pump_temperature_root', 'target_failure']
+train_dag:
+  resample_data:
+    begin_time: "01-01-2021"
+    end_time: "30-09-2021"
+predict_dag:
+  resample_data:
+    begin_time: "01-10-2021"
+    end_time: "31-12-2021"
 predict:
   SEED: 10
   predictions_name: "predictions.csv"
-  src_dir: "/c/py/predictive_esp/src/models/predict.py"
-  # input_path output_path model_name
-  CLI_params: "/c/py/predictive_esp/data/processed/test.csv /c/py/predictive_esp/data/predictions lr_model.pkl"
-
 train:
   SEED: 10
-  src_dir: "/c/py/predictive_esp/src/models/train.py"
   cross_val:
     test_size: 0.3
-  # train_path output_path target_name model_name
-  CLI_params: "/c/py/predictive_esp/data/processed/train.csv /c/py/predictive_esp/models/lr_model.pkl \"failure_target\""
-
-evaluate:
-  src_dir: ""
-  CLI_params: ""

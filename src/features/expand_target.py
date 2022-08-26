@@ -15,12 +15,6 @@ def expand_target(
     output_path: str,
     target_window: int
 ) -> None:
-    # Train or test, we can confirm that by folder name
-    folder_to_save = input_path.split("/")[-1]
-    folder_path = os.path.join(output_path, folder_to_save)
-
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
 
     for filename in os.listdir(input_path):
         file_path = os.path.join(input_path, filename)
@@ -47,11 +41,12 @@ def expand_target(
             0,
         )
         data_file = data_file.drop(["failure_date", "fail_range"], axis=1)
-        # data_file["stable"] = np.where(((data_file["time_to_failure"] >= 30) & (data_file["time_to_failure"] <= 90)), 1, 0)
+        # data_file["stable"] = np.where(((data_file["time_to_failure"] >= 30)
+        # & (data_file["time_to_failure"] <= 90)), 1, 0)
         data_file = data_file[data_file["time_to_failure"] != 999]
         data_file["stable"] = np.where((data_file["time_to_failure"] >= 20), 1, 0)
 
-        save_path = os.path.join(folder_path, filename)
+        save_path = os.path.join(output_path, filename)
         data_file.to_csv(save_path, index=False)
 
 
