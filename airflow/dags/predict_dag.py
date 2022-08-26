@@ -17,7 +17,7 @@ default_args = {
     "parallelism": 1
 }
 
-CONFIG_PATH = os.path.join("/c/py/predictive_esp/config/params_all.yaml")
+CONFIG_PATH = os.path.join("/c/py/predictive_esp/config/cli_params.yaml")
 
 
 with DAG(
@@ -27,7 +27,7 @@ with DAG(
     schedule_interval="5 * * * *",
     catchup=False
 ) as predict_dag:
-
+    predict_params = yaml.safe_load(open(CONFIG_PATH))["predict"]
     sensor_predict = ExternalTaskSensor(
         task_id="sensor_predict",
         external_dag_id="preprocess_predict_dag",
@@ -38,12 +38,9 @@ with DAG(
     )
 
     t1_id = "predict"
-    t1_params = yaml.safe_load(open(CONFIG_PATH))[t1_id]
-    t1_script = t1_params["src_dir"]
-    t1_args = t1_params["CLI_params"]
     t1 = BashOperator(
         task_id=t1_id,
-        bash_command=f"python3 {t1_script} {t1_args}"
+        bash_command=f"python3 {predict_params['scr_dir']} {predict_params['CLI_params']}"
     )
 
     sensor_predict >> t1

@@ -17,7 +17,7 @@ default_args = {
     "parallelism": 1
 }
 
-CONFIG_PATH = os.path.join("/c/py/predictive_esp/config/params_all.yaml")
+CONFIG_PATH = os.path.join("/c/py/predictive_esp/config/cli_params.yaml")
 
 
 with DAG(

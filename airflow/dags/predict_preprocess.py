@@ -17,7 +17,7 @@ default_args = {
     "parallelism": 1
 }
 
-CONFIG_PATH = os.path.join("/c/py/predictive_esp/config/params_all.yaml")
+CONFIG_PATH = os.path.join("/c/py/predictive_esp/config/cli_params.yaml")
 STRATEGY = "predict"
 
 
@@ -28,7 +28,7 @@ with DAG(
     schedule_interval="5 * * * *",
     catchup=False
 ) as preprocess_predict_dag:
-    tasks_params = yaml.safe_load(open(CONFIG_PATH))
+    tasks_params = yaml.safe_load(open(CONFIG_PATH))["predict_dag"]
 
     sensor_predict_preprocess = ExternalTaskSensor(
         task_id="sensor_predict_preprocess",
@@ -43,49 +43,41 @@ with DAG(
     t1 = BashOperator(
         task_id=t1_name,
         bash_command=f"python3 {tasks_params[t1_name]['src_dir']} {tasks_params[t1_name]['CLI_params']}",
-        trigger_rule="all_success"
     )
     t2_name = "merge_by_well"
     t2 = BashOperator(
         task_id=t2_name,
         bash_command=f"python3 {tasks_params[t2_name]['src_dir']} {tasks_params[t2_name]['CLI_params']}",
-        trigger_rule="all_success"
     )
     t3_name = "join_events"
     t3 = BashOperator(
         task_id=t3_name,
         bash_command=f"python3 {tasks_params[t3_name]['src_dir']} {tasks_params[t3_name]['CLI_params']}",
-        trigger_rule="all_success"
     )
     t4_name = "expand_target"
     t4 = BashOperator(
         task_id=t4_name,
         bash_command=f"python3 {tasks_params[t4_name]['src_dir']} {tasks_params[t4_name]['CLI_params']}",
-        trigger_rule="all_success"
     )
     t5_name = "build_features"
     t5 = BashOperator(
         task_id=t5_name,
         bash_command=f"python3 {tasks_params[t5_name]['src_dir']} {tasks_params[t5_name]['CLI_params']}",
-        trigger_rule="all_success"
     )
     t6_name = "merge"
     t6 = BashOperator(
         task_id=t6_name,
         bash_command=f"python3 {tasks_params[t6_name]['src_dir']} {tasks_params[t6_name]['CLI_params']}",
-        trigger_rule="all_success"
     )
     t7_name = "clear_nulls"
     t7 = BashOperator(
         task_id=t7_name,
         bash_command=f"python3 {tasks_params[t7_name]['src_dir']} {tasks_params[t7_name]['CLI_params']}",
-        trigger_rule="all_success"
     )
     t8_name = "create_dataset"
     t8 = BashOperator(
         task_id=t8_name,
         bash_command=f"python3 {tasks_params[t8_name]['src_dir']} {tasks_params[t8_name]['CLI_params']}",
-        trigger_rule="all_success"
     )
     maker_predict_preprocess = ExternalTaskMarker(
         task_id="maker_predict_preprocess",

@@ -17,7 +17,7 @@ default_args = {
     "parallelism": 1
 }
 
-CONFIG_PATH = os.path.join("/c/py/predictive_esp/config/params_all.yaml")
+CONFIG_PATH = os.path.join("/c/py/predictive_esp/config/cli_params.yaml")
 
 pipelines = {
     "train": {"schedule": "5 * * * *"},
@@ -39,8 +39,8 @@ with DAG(
         task_id="sensor_train",
         external_dag_id="preprocess_train_dag",
         external_task_id="maker_train_preprocess",
-        allowed_states=["success"],
-        failed_states=["failed", "skipped"],
+        allowed_states=["success", "skipped"],
+        failed_states=["failed"],
         mode="reschedule"
     )
     t1_name = "train"
