@@ -40,7 +40,7 @@ with DAG(
     t1_id = "predict"
     t1 = BashOperator(
         task_id=t1_id,
-        bash_command=f"python3 {predict_params['scr_dir']} {predict_params['CLI_params']}"
+        bash_command=f"python3 {predict_params['src_dir']} {predict_params['CLI_params']}"
     )
 
     sensor_predict >> t1
