@@ -34,11 +34,17 @@ with DAG(
         task_id=t1_name,
         bash_command=f"python3 {tasks_params[t1_name]['src_dir']} {tasks_params[t1_name]['CLI_params']}"
     )
-    maker_extract = ExternalTaskMarker(
-        task_id="maker_extract",
+    maker_train_extract = ExternalTaskMarker(
+        task_id="maker_train_extract",
         external_dag_id="preprocess_train_dag",
         external_task_id="sensor_train_preprocess"
     )
+    maker_predict_extract = ExternalTaskMarker(
+        task_id="maker_predict_extract",
+        external_dag_id="preprocess_predict_dag",
+        external_task_id="sensor_predict_preprocess"
+    )
 
-    maker_extract.set_upstream(t1)
+    maker_train_extract.set_upstream(t1)
+    maker_predict_extract.set_upstream(t1)
 

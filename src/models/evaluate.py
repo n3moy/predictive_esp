@@ -1,14 +1,17 @@
-import os.path
+import os
 
 import click
+import yaml
 import joblib
 import mlflow
 import pandas as pd
 import numpy as np
+from mlflow.tracking import MlflowClient
 from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_auc_score, f1_score
 
 
 FILENAME = "evaluate_preds.csv"
+CONFIG_PATH = "/c/py/predictive_esp/config/params_all.yaml"
 
 
 def evaluate_results(
@@ -69,6 +72,17 @@ def evaluate_results(
     return table
 
 
+def get_version_model(config_name, client):
+    """
+    Gets last version from MLFlow
+    """
+    dict_push = {}
+    for count, value in enumerate(client.search_model_versions(f"name='{config_name}'")):
+        dict_push[count] = value
+
+    return dict(list(dict_push.items())[-1][1])["version"]
+
+
 @click.command()
 @click.argument("model_path", type=click.Path())
 @click.argument("data_path", type=click.Path())
@@ -118,6 +132,17 @@ def evaluate(
 
     save_path = os.path.join(output_path, FILENAME)
     prediction.to_csv(save_path, index=False)
+
+    # Saving last version of a model
+    config = yaml.safe_load(open(CONFIG_PATH))
+    client = MlflowClient()
+    last_version_lr = get_version_model(config["evaluate"]["model_lr"], client)
+
+    yaml_file = yaml.safe_load(open(CONFIG_PATH))
+    yaml_file["evaluate"]["version_lr"] = int(last_version_lr)
+
+    with open(CONFIG_PATH, "w") as fp:
+        yaml.dump(yaml_file, fp, encoding="UTF-8", allow_unicode=True)
 
 
 if __name__ == "__main__":

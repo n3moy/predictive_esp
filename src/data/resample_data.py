@@ -4,9 +4,6 @@ import yaml
 import click
 import pandas as pd
 
-CONFIG_PATH = "/c/py/predictive_esp/config/params_all.yaml"
-config_data = yaml.safe_load(open(CONFIG_PATH))["resample_data"]
-
 
 @click.command()
 @click.argument("input_path", type=click.Path())

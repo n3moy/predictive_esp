@@ -33,7 +33,7 @@ with DAG(
     sensor_predict_preprocess = ExternalTaskSensor(
         task_id="sensor_predict_preprocess",
         external_dag_id="extract_data_dag",
-        external_task_id="maker_extract",
+        external_task_id="maker_predict_extract",
         allowed_states=["success", "skipped"],
         failed_states=["failed"],
         mode="reschedule"

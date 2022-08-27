@@ -29,18 +29,27 @@ create_dataset:
          'pump_temperature_rol_min_2520', 'pump_temperature_spk_2520',
          'pump_temperature_deriv', 'pump_temperature_squared',
          'pump_temperature_root', 'target_failure']
+
 train_dag:
   resample_data:
     begin_time: "01-01-2021"
     end_time: "30-09-2021"
+
 predict_dag:
   resample_data:
     begin_time: "01-10-2021"
     end_time: "31-12-2021"
+
 predict:
   SEED: 10
   predictions_name: "predictions.csv"
+
 train:
   SEED: 10
   cross_val:
     test_size: 0.3
+
+evaluate:
+  model_lr:
+    version_lr: 0
+
