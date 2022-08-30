@@ -25,7 +25,7 @@ with DAG(
     "preprocess_train_dag",
     default_args=default_args,
     description="From renamed data to processed train data",
-    schedule_interval="20 * * * *",
+    schedule_interval="30 * * * *",
     catchup=False
 ) as preprocess_train_dag:
     tasks_params = yaml.safe_load(open(CONFIG_PATH))["train_dag"]

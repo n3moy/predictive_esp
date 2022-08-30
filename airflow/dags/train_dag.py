@@ -20,7 +20,7 @@ default_args = {
 CONFIG_PATH = os.path.join("/c/py/predictive_esp/config/cli_params.yaml")
 
 pipelines = {
-    "train": {"schedule": "20 * * * *"},
+    "train": {"schedule": "30 * * * *"},
     "predict": {"schedule": "* * * * *"},
     "extract_data_dag": {"schedule": "5 * * * *"},
     "preprocess_dag": {"schedule": "5 * * * *"}

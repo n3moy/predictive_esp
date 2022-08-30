@@ -2,10 +2,8 @@ import os
 
 import click
 import joblib
-import mlflow
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_auc_score, f1_score
 
 DROP_COLS = ["time", "event_id"]
 TEST_PATH = "/c/py/predictive_esp/data/processed/train.csv"

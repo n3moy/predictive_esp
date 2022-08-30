@@ -25,7 +25,7 @@ with DAG(
     "preprocess_predict_dag",
     default_args=default_args,
     description="From renamed data to processed test data",
-    schedule_interval="25 * * * *",
+    schedule_interval="35 * * * *",
     catchup=False
 ) as preprocess_predict_dag:
     tasks_params = yaml.safe_load(open(CONFIG_PATH))["predict_dag"]

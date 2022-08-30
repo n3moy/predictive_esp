@@ -24,7 +24,7 @@ with DAG(
     "evaluate_dag",
     default_args=default_args,
     description="Evaluate model efficiency",
-    schedule_interval="20 * * * *",
+    schedule_interval="30 * * * *",
     catchup=False
 ) as evaluate_dag:
     train_config = yaml.safe_load(open(CONFIG_PATH))["evaluate"]
