@@ -2,8 +2,10 @@ import os
 
 import click
 import pandas as pd
+import numpy as np
+import yaml
 
-DROP_COLS = []
+CONFIG_PATH = "/c/py/predictive_esp/config/params_all.yaml"
 
 
 @click.command()
@@ -13,28 +15,39 @@ def preprocess(
     input_path: str,
     output_path: str
 ) -> None:
+    # Depending on directory might be "train" or "test"
+    task = input_path.split("/")[-1]
+    config = yaml.safe_load(open(CONFIG_PATH))["preprocess"]
+    DROP_COLS = config["drop_columns"]
 
-    for filename in os.listdir(input_path):
-        file_path = os.path.join(input_path, filename)
-        data_file = pd.read_csv(file_path, parse_dates=["time"])
-        data_file = data_file.set_index("time")
-        data_file = data_file.drop(DROP_COLS, axis=1)
-        data_file = data_file.replace(float("inf"), 0)
-        cols = data_file.columns
-        row_number = data_file.shape[0]
+    data_file = pd.read_csv(input_path, parse_dates=["time"])
+    data_file = data_file.set_index("time")
+    # data_file = data_file.drop(DROP_COLS, axis=1)
+    data_file = data_file.replace(float("inf"), np.nan)
+    cols = data_file.columns
+    row_number = data_file.shape[0]
 
+    # I use train data only to decide which columns to use in next steps
+    if task == "train.csv":
+        # Drop columns that are mostly NaNs
         for col in cols:
             count_nan = data_file[col].isna().sum()
-            if count_nan >= row_number // 2:
-                data_file = data_file.drop(col, axis=1)
+            if count_nan >= row_number // 5:
                 DROP_COLS.append(col)
+    DROP_COLS = np.unique(DROP_COLS).tolist()
+    data_file = data_file.select_dtypes(include=[int, float])
+    data_file = data_file.drop(DROP_COLS, axis=1)
+    data_file = data_file.dropna()
 
-        data_file = data_file.select_dtypes(include=[int, float])
-        data_file = data_file.dropna()
+    data_file.to_csv(output_path)
 
-        new_name = filename[:-4] + "_preprocessed.csv"
-        save_path = os.path.join(output_path, new_name)
-        data_file.to_csv(save_path)
+    if task == "train.csv":
+        # Register necessary columns for resulting dataset
+        config = yaml.safe_load(open(CONFIG_PATH))
+        config["preprocess"]["drop_columns"] = DROP_COLS
+
+        with open(CONFIG_PATH, "w") as f:
+            yaml.dump(config, f, encoding="UTF-8", allow_unicode=True, default_flow_style=False)
 
 
 if __name__ == "__main__":

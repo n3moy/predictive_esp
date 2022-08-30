@@ -25,7 +25,7 @@ with DAG(
     "preprocess_train_dag",
     default_args=default_args,
     description="From renamed data to processed train data",
-    schedule_interval="5 * * * *",
+    schedule_interval="20 * * * *",
     catchup=False
 ) as preprocess_train_dag:
     tasks_params = yaml.safe_load(open(CONFIG_PATH))["train_dag"]
@@ -69,15 +69,20 @@ with DAG(
         task_id=t6_name,
         bash_command=f"python3 {tasks_params[t6_name]['src_dir']} {tasks_params[t6_name]['CLI_params']}",
     )
-    t7_name = "clear_nulls"
+    t7_name = "create_dataset"
     t7 = BashOperator(
         task_id=t7_name,
         bash_command=f"python3 {tasks_params[t7_name]['src_dir']} {tasks_params[t7_name]['CLI_params']}",
     )
-    t8_name = "create_dataset"
+    t8_name = "clear_nulls"
     t8 = BashOperator(
         task_id=t8_name,
         bash_command=f"python3 {tasks_params[t8_name]['src_dir']} {tasks_params[t8_name]['CLI_params']}",
+    )
+    maker_train_nulls = ExternalTaskMarker(
+        task_id="maker_train_nulls",
+        external_dag_id="preprocess_predict_dag",
+        external_task_id="sensor_predict_nulls"
     )
     maker_train_preprocess = ExternalTaskMarker(
         task_id="maker_train_preprocess",
@@ -94,7 +99,9 @@ with DAG(
     t6.set_upstream(t4)
     t7.set_upstream(t6)
     t8.set_upstream(t7)
-    maker_train_preprocess.set_upstream(t8)
+    # Signal to predict preprocess dag
+    maker_train_nulls.set_upstream(t8)
+    maker_train_preprocess.set_upstream(maker_train_nulls)
 
 
 

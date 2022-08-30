@@ -29,7 +29,7 @@ def train_lr(
     """
     train_data = pd.read_csv(train_path)
     train_data = train_data.select_dtypes(include=[float, int])
-    X, y = train_data.drop(target_name, axis=1), train_data[target_name]
+    X, y = train_data.drop([target_name, "event_id"], axis=1), train_data[target_name]
 
     lr = LogisticRegression(random_state=42)
     lr.fit(X, y)

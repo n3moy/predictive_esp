@@ -43,7 +43,7 @@ def expand_target(
         data_file = data_file.drop(["failure_date", "fail_range"], axis=1)
         # data_file["stable"] = np.where(((data_file["time_to_failure"] >= 30)
         # & (data_file["time_to_failure"] <= 90)), 1, 0)
-        data_file = data_file[data_file["time_to_failure"] != 999]
+        # data_file = data_file[data_file["time_to_failure"] != 999]
         data_file["stable"] = np.where((data_file["time_to_failure"] >= 20), 1, 0)
 
         save_path = os.path.join(output_path, filename)

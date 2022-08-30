@@ -18,7 +18,7 @@ def join_data(
     """
     This function joins all datasets in 'list_data' into one pd.DataFrame and splits it in train and test
     """
-    # Train or test, we can confirm that by folder name
+    # We use columns for joined dataset from output of expand target script
     config = yaml.safe_load(open(CONFIG_PATH))["create_dataset"]
     data_cols = config["columns"]
     joined_df = pd.DataFrame(columns=data_cols)

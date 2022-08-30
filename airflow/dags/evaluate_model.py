@@ -24,7 +24,7 @@ with DAG(
     "evaluate_dag",
     default_args=default_args,
     description="Evaluate model efficiency",
-    schedule_interval="5 * * * *",
+    schedule_interval="20 * * * *",
     catchup=False
 ) as evaluate_dag:
     train_config = yaml.safe_load(open(CONFIG_PATH))["evaluate"]
@@ -36,6 +36,15 @@ with DAG(
         failed_states=["failed"],
         mode="reschedule"
     )
+    sensor_train_model = ExternalTaskSensor(
+        task_id="sensor_train_model",
+        external_dag_id="train_dag",
+        external_task_id="maker_train1",
+        allowed_states=["success"],
+        failed_states=["failed", "skipped"],
+        mode="reschedule"
+    )
+
     t1_name = "evaluate"
     t1 = BashOperator(
         task_id=t1_name,
@@ -48,5 +57,5 @@ with DAG(
     #     external_task_id="sensor_predict"
     # )
 
-    sensor_evaluate >> t1
+    [sensor_evaluate, sensor_train_model] >> t1
 

@@ -24,7 +24,7 @@ with DAG(
     "extract_data_dag",
     default_args=default_args,
     description="From raw data to renamed and split",
-    schedule_interval="5 * * * *",
+    schedule_interval="20 * * * *",
     catchup=False
 ) as extract_data_dag:
     tasks_params = yaml.safe_load(open(CONFIG_PATH))

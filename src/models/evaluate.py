@@ -79,7 +79,7 @@ def get_version_model(config_name, client):
     dict_push = {}
     for count, value in enumerate(client.search_model_versions(f"name='{config_name}'")):
         dict_push[count] = value
-
+    print(dict_push)
     return dict(list(dict_push.items())[-1][1])["version"]
 
 
@@ -95,13 +95,17 @@ def evaluate(
     output_path: str
 ) -> None:
 
-    test_data = pd.read_csv(data_path)
+    test_data = pd.read_csv(data_path, parse_dates=["time"])
+    # time_series = test_data["time"]
+    # test_data = test_data.drop("time", axis=1)
+    test_data = test_data.set_index("time")
+    test_data = test_data.dropna()
     model = joblib.load(model_path)
-    X, y = test_data.drop(target_name, axis=1), test_data[target_name]
-
+    X, y = test_data.drop([target_name, "event_id"], axis=1), test_data[target_name]
     mlflow.set_tracking_uri("http://localhost:5000")
     mlflow_experiment_id = "lr_model"
     mlflow.set_experiment(mlflow_experiment_id)
+    config = yaml.safe_load(open(CONFIG_PATH))
 
     with mlflow.start_run():
         prediction = model.predict(X)
@@ -112,8 +116,9 @@ def evaluate(
         f1 = f1_score(y, prediction)
 
         test_data["predicted"] = prediction
+        test_data = test_data.reset_index()
         table_metrics = evaluate_results(test_data)
-        table_metrics = table_metrics.to_dict()
+        table_metrics = table_metrics.to_dict(orient="records")[0]
 
         mlflow.log_metric("Accuracy_signal", accuracy)
         mlflow.log_metric("Precision_signal", precision)
@@ -125,21 +130,20 @@ def evaluate(
         mlflow.sklearn.log_model(
             sk_model=model,
             artifact_path="lr_model",
-            registered_model_name="default_lr_model"
+            registered_model_name=config["train"]["model_name"]
         )
 
         mlflow.end_run()
 
     save_path = os.path.join(output_path, FILENAME)
-    prediction.to_csv(save_path, index=False)
+    np.savetxt(save_path, prediction, delimiter=",")
 
     # Saving last version of a model
-    config = yaml.safe_load(open(CONFIG_PATH))
     client = MlflowClient()
-    last_version_lr = get_version_model(config["evaluate"]["model_lr"], client)
+    last_version_lr = get_version_model(config["train"]["model_name"], client)
 
     yaml_file = yaml.safe_load(open(CONFIG_PATH))
-    yaml_file["evaluate"]["version_lr"] = int(last_version_lr)
+    yaml_file["evaluate"]["model_version"] = int(last_version_lr)
 
     with open(CONFIG_PATH, "w") as fp:
         yaml.dump(yaml_file, fp, encoding="UTF-8", allow_unicode=True)

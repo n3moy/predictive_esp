@@ -1,55 +1,114 @@
 create_dataset:
-    columns: ['active_power', 'electricity_gage', 'frequency', 'gas_rate',
-         'intake_pressure', 'isolation', 'line_pressure', 'liquid_rate',
-         'motor_temperature', 'oil_rate', 'op_current1', 'op_current2',
-         'op_current3', 'pump_temperature', 'reagent_rate', 'voltageAB',
-         'voltageBC', 'voltageCA', 'event_id', 'time_to_failure',
-         'failure_target', 'stable', 'voltage_unbalance', 'current_unbalance',
-         'voltage', 'current', 'resistance', 'power_A', 'power_B', 'power_C',
-         'theory_power', 'power_diff', 'power_lossesA', 'power_lossesB',
-         'power_lossesC', 'pressure_drop', 'theory_rate', 'rate_diff',
-         'freq_ratio', 'freq_squared_ratio', 'freq_cubic_ratio', 'skin',
-         'current_rol_mean_2520', 'current_rol_std_2520', 'current_rol_max_2520',
-         'current_rol_min_2520', 'current_spk_2520', 'current_deriv',
-         'current_squared', 'current_root', 'voltage_rol_mean_2520',
-         'voltage_rol_std_2520', 'voltage_rol_max_2520', 'voltage_rol_min_2520',
-         'voltage_spk_2520', 'voltage_deriv', 'voltage_squared', 'voltage_root',
-         'active_power_rol_mean_2520', 'active_power_rol_std_2520',
-         'active_power_rol_max_2520', 'active_power_rol_min_2520',
-         'active_power_spk_2520', 'active_power_deriv', 'active_power_squared',
-         'active_power_root', 'frequency_rol_mean_2520',
-         'frequency_rol_std_2520', 'frequency_rol_max_2520',
-         'frequency_rol_min_2520', 'frequency_spk_2520', 'frequency_deriv',
-         'frequency_squared', 'frequency_root', 'electricity_gage_rol_mean_2520',
-         'electricity_gage_rol_std_2520', 'electricity_gage_rol_max_2520',
-         'electricity_gage_rol_min_2520', 'electricity_gage_spk_2520',
-         'electricity_gage_deriv', 'electricity_gage_squared',
-         'electricity_gage_root', 'pump_temperature_rol_mean_2520',
-         'pump_temperature_rol_std_2520', 'pump_temperature_rol_max_2520',
-         'pump_temperature_rol_min_2520', 'pump_temperature_spk_2520',
-         'pump_temperature_deriv', 'pump_temperature_squared',
-         'pump_temperature_root', 'target_failure']
-
-train_dag:
-  resample_data:
-    begin_time: "01-01-2021"
-    end_time: "30-09-2021"
-
-predict_dag:
-  resample_data:
-    begin_time: "01-10-2021"
-    end_time: "31-12-2021"
-
+  columns:
+  - time
+  - active_power
+  - electricity_gage
+  - frequency
+  - gas_rate
+  - intake_pressure
+  - isolation
+  - line_pressure
+  - liquid_rate
+  - motor_load
+  - motor_temperature
+  - oil_rate
+  - op_current1
+  - op_current2
+  - op_current3
+  - pump_temperature
+  - voltageAB
+  - voltageBC
+  - voltageCA
+  - voltage_unbalance
+  - current_unbalance
+  - voltage
+  - current
+  - resistance
+  - power_A
+  - power_B
+  - power_C
+  - theory_power
+  - power_diff
+  - power_lossesA
+  - power_lossesB
+  - power_lossesC
+  - pressure_drop
+  - theory_rate
+  - rate_diff
+  - freq_ratio
+  - freq_squared_ratio
+  - freq_cubic_ratio
+  - skin
+  - current_rol_mean_2520
+  - current_rol_std_2520
+  - current_rol_max_2520
+  - current_rol_min_2520
+  - current_spk_2520
+  - current_deriv
+  - current_squared
+  - current_root
+  - voltage_rol_mean_2520
+  - voltage_rol_std_2520
+  - voltage_rol_max_2520
+  - voltage_rol_min_2520
+  - voltage_spk_2520
+  - voltage_deriv
+  - voltage_squared
+  - voltage_root
+  - active_power_rol_mean_2520
+  - active_power_rol_std_2520
+  - active_power_rol_max_2520
+  - active_power_rol_min_2520
+  - active_power_spk_2520
+  - active_power_deriv
+  - active_power_squared
+  - active_power_root
+  - frequency_rol_mean_2520
+  - frequency_rol_std_2520
+  - frequency_rol_max_2520
+  - frequency_rol_min_2520
+  - frequency_spk_2520
+  - frequency_deriv
+  - frequency_squared
+  - frequency_root
+  - electricity_gage_rol_mean_2520
+  - electricity_gage_rol_std_2520
+  - electricity_gage_rol_max_2520
+  - electricity_gage_rol_min_2520
+  - electricity_gage_spk_2520
+  - electricity_gage_deriv
+  - electricity_gage_squared
+  - electricity_gage_root
+  - pump_temperature_rol_mean_2520
+  - pump_temperature_rol_std_2520
+  - pump_temperature_rol_max_2520
+  - pump_temperature_rol_min_2520
+  - pump_temperature_spk_2520
+  - pump_temperature_deriv
+  - pump_temperature_squared
+  - pump_temperature_root
+  - target_failure
+  - event_id
+evaluate:
+  model_name: LogisticRegression
+  model_version: 1
 predict:
   SEED: 10
-  predictions_name: "predictions.csv"
-
+  predictions_name: predictions.csv
+predict_dag:
+  resample_data:
+    begin_time: 01-10-2021
+    end_time: 31-12-2021
+preprocess:
+  drop_columns:
+  - isolation
+  - motor_load
 train:
   SEED: 10
   cross_val:
     test_size: 0.3
-
-evaluate:
-  model_lr:
-    version_lr: 0
-
+  model_name: LogisticRegression
+train_dag:
+  resample_data:
+    begin_time: 01-01-2021
+    end_time: 30-09-2021

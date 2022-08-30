@@ -20,7 +20,7 @@ default_args = {
 CONFIG_PATH = os.path.join("/c/py/predictive_esp/config/cli_params.yaml")
 
 pipelines = {
-    "train": {"schedule": "5 * * * *"},
+    "train": {"schedule": "20 * * * *"},
     "predict": {"schedule": "* * * * *"},
     "extract_data_dag": {"schedule": "5 * * * *"},
     "preprocess_dag": {"schedule": "5 * * * *"}
@@ -49,11 +49,16 @@ with DAG(
         bash_command=f"python3 {train_config['src_dir']} {train_config['CLI_params']}"
     )
 
-    # maker_train = ExternalTaskMarker(
-    #     task_id="maker_train",
-    #     external_dag_id="predict_dag",
+    maker_train1 = ExternalTaskMarker(
+        task_id="maker_train1",
+        external_dag_id="evaluate_dag",
+        external_task_id="sensor_train_model"
+    )
+    # maker_train2 = ExternalTaskMarker(
+    #     task_id="maker_train2",
+    #     external_dag_id="evaluate_dag",
     #     external_task_id="sensor_predict"
     # )
 
-    sensor_train >> t1
+    sensor_train >> t1 >> maker_train1
 

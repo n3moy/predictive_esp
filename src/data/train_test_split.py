@@ -20,6 +20,7 @@ def split(
     test_output_path = os.path.join(output_path, TEST_FOLDER)
     train_output_path = os.path.join(output_path, TRAIN_FOLDER)
     # start_test_month = randint(1, 12-window_size)
+    # Its constant for now
     start_test_month = 9
 
     for dirname, _, filenames in os.walk(input_path):
@@ -32,9 +33,6 @@ def split(
         test_folder_path = os.path.join(test_output_path, save_folder)
         train_folder_path = os.path.join(train_output_path, save_folder)
 
-        print(f"Test folder path:\n{test_folder_path}")
-        print(f"Train folder path:\n{train_folder_path}")
-
         os.makedirs(test_folder_path, exist_ok=True)
         os.makedirs(train_folder_path, exist_ok=True)
 
@@ -42,6 +40,7 @@ def split(
             file_path = os.path.join(dirname, filename)
             data_file = pd.read_csv(file_path, parse_dates=["time"])
             data_file["month"] = data_file["time"].dt.month
+            # I use data within 'window_size' (in months) for testing
             mask = (data_file["month"] >= start_test_month) & (data_file["month"] <= start_test_month + window_size)
             test_data = data_file.loc[mask, :]
             train_data = data_file.loc[~mask, :]
