@@ -17,7 +17,7 @@ default_args = {
     "parallelism": 1
 }
 
-CONFIG_PATH = os.path.join("/c/py/predictive_esp/config/cli_params.yaml")
+CONFIG_PATH = os.path.join("C:\\py\\predictive_esp\\config\\cli_params.yaml")
 STRATEGY = "predict"
 
 
