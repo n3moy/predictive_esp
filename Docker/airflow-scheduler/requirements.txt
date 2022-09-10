@@ -1,0 +1,6 @@
+googlenews == 1.6.4                    
+fredapi == 0.4.3
+scipy == 1.9.0
+statsmodels == 0.13.2
+pmdarima == 1.8.5
+python-dotenv == 0.21.0
