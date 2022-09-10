@@ -148,11 +148,10 @@ def evaluate(
     yaml_file = yaml.safe_load(open(config_path))
     yaml_file["evaluate"]["model_version"] = int(last_version_lr)
 
-    with open(CONFIG_PATH, "w") as fp:
+    with open(config_path, "w") as fp:
         yaml.dump(yaml_file, fp, encoding="UTF-8", allow_unicode=True)
 
 
 if __name__ == "__main__":
     evaluate()
-
 
