@@ -5,7 +5,7 @@ import click
 import pandas as pd
 
 
-CONFIG_PATH = os.path.join("/c/py/predictive_esp/config/params_all.yaml")
+config_path = os.environ["CONFIG_PATH_PARAMS"]
 
 
 @click.command()
@@ -20,6 +20,7 @@ def merge_features(
     task = featured_path.split("/")[-1]
     featured_filenames = os.listdir(featured_path)
     expanded_filenames = os.listdir(expanded_path)
+    os.makedirs(output_path, exist_ok=True)
 
     for f_filename, e_filename in zip(featured_filenames, expanded_filenames):
         f_file_path = os.path.join(featured_path, f_filename)
@@ -36,12 +37,12 @@ def merge_features(
         save_path = os.path.join(output_path, filename)
         f_data_file.to_csv(save_path, index=False)
 
-    if task == "train":
+    if task == "train" and featured_filenames:
         # Register necessary columns for resulting dataset
-        config = yaml.safe_load(open(CONFIG_PATH))
+        config = yaml.safe_load(open(config_path))
         config["create_dataset"]["columns"] = f_data_file.columns.to_list()
 
-        with open(CONFIG_PATH, "w") as f:
+        with open(config_path, "w") as f:
             yaml.dump(config, f, encoding="UTF-8", allow_unicode=True, default_flow_style=False)
 
 

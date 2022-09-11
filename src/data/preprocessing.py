@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 import yaml
 
-CONFIG_PATH = "/c/py/predictive_esp/config/params_all.yaml"
+config_path = os.environ["CONFIG_PATH_PARAMS"]
 
 
 @click.command()
@@ -17,10 +17,14 @@ def preprocess(
 ) -> None:
     # Depending on directory might be "train" or "test"
     task = input_path.split("/")[-1]
-    config = yaml.safe_load(open(CONFIG_PATH))["preprocess"]
+    config = yaml.safe_load(open(config_path))["preprocess"]
     DROP_COLS = config["drop_columns"]
 
-    data_file = pd.read_csv(input_path, parse_dates=["time"])
+    try:
+        data_file = pd.read_csv(input_path, parse_dates=["time"])
+    except IsADirectoryError:
+        print("File is empty, nothing to load")
+        return
     data_file = data_file.set_index("time")
     # data_file = data_file.drop(DROP_COLS, axis=1)
     data_file = data_file.replace(float("inf"), np.nan)
@@ -43,10 +47,10 @@ def preprocess(
 
     if task == "train.csv":
         # Register necessary columns for resulting dataset
-        config = yaml.safe_load(open(CONFIG_PATH))
+        config = yaml.safe_load(open(config_path))
         config["preprocess"]["drop_columns"] = DROP_COLS
 
-        with open(CONFIG_PATH, "w") as f:
+        with open(config_path, "w") as f:
             yaml.dump(config, f, encoding="UTF-8", allow_unicode=True, default_flow_style=False)
 
 

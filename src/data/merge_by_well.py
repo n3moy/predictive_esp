@@ -21,6 +21,8 @@ def merge(
     end_time = pd.to_datetime(end_time, infer_datetime_format=True)
     common_idx = pd.date_range(begin_time, end_time, freq="2min")
 
+    os.makedirs(output_path, exist_ok=True)
+
     for dirname, _, filenames in os.walk(input_path):
         joined_data = pd.DataFrame({"time": common_idx})
 

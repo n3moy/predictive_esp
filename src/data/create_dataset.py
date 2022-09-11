@@ -4,7 +4,7 @@ import click
 import pandas as pd
 import yaml
 
-CONFIG_PATH = os.path.join("/c/py/predictive_esp/config/params_all.yaml")
+config_path = os.environ["CONFIG_PATH_PARAMS"]
 FILENAMES = {"train": "train.csv", "test": "test.csv"}
 
 
@@ -19,9 +19,10 @@ def join_data(
     This function joins all datasets in 'list_data' into one pd.DataFrame and splits it in train and test
     """
     # We use columns for joined dataset from output of expand target script
-    config = yaml.safe_load(open(CONFIG_PATH))["create_dataset"]
+    config = yaml.safe_load(open(config_path))["create_dataset"]
     data_cols = config["columns"]
     joined_df = pd.DataFrame(columns=data_cols)
+    os.makedirs(output_path, exist_ok=True)
 
     for filename in os.listdir(input_path):
         file_path = os.path.join(input_path, filename)
@@ -29,7 +30,10 @@ def join_data(
         joined_df = pd.concat([joined_df, data_file], axis=0)
 
     joined_df = joined_df.reset_index(drop=True)
-    joined_df.to_csv(output_path, index=False)
+    try:
+        joined_df.to_csv(output_path, index=False)
+    except IsADirectoryError:
+        print("File is empty, nothing to save")
 
 
 if __name__ == "__main__":

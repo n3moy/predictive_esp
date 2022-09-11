@@ -26,6 +26,7 @@ def build_features(
     """
     # Train or test, we can confirm that by folder name
     global COLS_TO_CALC
+    os.makedirs(output_path, exist_ok=True)
 
     for filename in os.listdir(input_path):
         file_path = os.path.join(input_path, filename)

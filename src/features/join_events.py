@@ -20,6 +20,8 @@ def join_events_to_data(
 
     """
 
+    os.makedirs(output_path, exist_ok=True)
+
     for filename in os.listdir(input_path):
         file_path = os.path.join(input_path, filename)
         data_file = pd.read_csv(file_path, parse_dates=["time"])
