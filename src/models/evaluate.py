@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 from mlflow.tracking import MlflowClient
 from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_auc_score, f1_score
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
 
 def evaluate_results(
@@ -80,9 +80,9 @@ def get_version_model(config_name, client):
     return dict(list(dict_push.items())[-1][1])["version"]
 
 
-load_dotenv()
-remote_server_uri = os.getenv("MLFLOW_TRACKING_URI")
-config_path = os.getenv("CONFIG_PATH_PARAMS")
+# load_dotenv()
+remote_server_uri = "http://127.0.0.1:5000"     # os.getenv("MLFLOW_TRACKING_URI")
+config_path = os.environ["CONFIG_PATH_PARAMS"]
 FILENAME = "evaluate_preds.csv"
 
 

@@ -22,7 +22,7 @@ def join_data(
     config = yaml.safe_load(open(config_path))["create_dataset"]
     data_cols = config["columns"]
     joined_df = pd.DataFrame(columns=data_cols)
-    os.makedirs(output_path, exist_ok=True)
+    # os.makedirs(output_path, exist_ok=True)
 
     for filename in os.listdir(input_path):
         file_path = os.path.join(input_path, filename)
@@ -30,10 +30,7 @@ def join_data(
         joined_df = pd.concat([joined_df, data_file], axis=0)
 
     joined_df = joined_df.reset_index(drop=True)
-    try:
-        joined_df.to_csv(output_path, index=False)
-    except IsADirectoryError:
-        print("File is empty, nothing to save")
+    joined_df.to_csv(output_path, index=False)
 
 
 if __name__ == "__main__":

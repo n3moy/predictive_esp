@@ -169,7 +169,6 @@ services:
       - postgres
     env_file:
       - .env
-  
         
 networks:
     s3:
