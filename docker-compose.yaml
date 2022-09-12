@@ -18,6 +18,7 @@ x-airflow-common:
     - ./logs:/opt/airflow/logs
     - ./plugins:/opt/airflow/plugins
     - ./data:/data
+    - ./models:/models
     - ./config:/config
     - ./src:/src
   user: "${AIRFLOW_UID:-50000}:0"
@@ -104,16 +105,16 @@ services:
         - MLFLOW_S3_ENDPOINT_URL=http://nginx:9000
     command: mlflow server --backend-store-uri postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/${POSTGRES_DB} --default-artifact-root s3://${AWS_S3_BUCKET}/ --host 0.0.0.0
 
-  redis:
-    image: redis:latest
-    expose:
-      - 6379
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 30s
-      retries: 50
-    restart: always
+#  redis:
+#    image: redis:latest
+#    expose:
+#      - 6379
+#    healthcheck:
+#      test: ["CMD", "redis-cli", "ping"]
+#      interval: 5s
+#      timeout: 30s
+#      retries: 50
+#    restart: always
 
   airflow-init:
     <<: *airflow-common
@@ -134,7 +135,7 @@ services:
     user: "0:0"
     volumes:
       - .:/sources
-      
+
   airflow-webserver:
     <<: *airflow-common
 #    build:
@@ -168,6 +169,7 @@ services:
       - postgres
     env_file:
       - .env
+  
         
 networks:
     s3:

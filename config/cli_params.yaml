@@ -1,94 +1,94 @@
 
 train_test_split:
   src_dir: "../../src/data/train_test_split.py"
-  CLI_params: "../data/interim/renamed ../data/interim/train_test 3"
+  CLI_params: "../../data/interim/renamed ../../data/interim/train_test 3"
 
 
 train_dag:
   resample_data:
     src_dir: "../../src/data/resample_data.py"
-    CLI_params: "../data/interim/train_test/train ../data/interim/resampled/train \"01-01-2021\" \"30-09-2021\""
+    CLI_params: "../../data/interim/train_test/train ../../data/interim/resampled/train \"01-01-2021\" \"30-09-2021\""
 
   merge_by_well:
     src_dir: "../../src/data/merge_by_well.py"
-    CLI_params: "../data/interim/resampled/train ../data/interim/merged_wells/train \"01-01-2021\" \"30-09-2021\""
+    CLI_params: "../../data/interim/resampled/train ../../data/interim/merged_wells/train \"01-01-2021\" \"30-09-2021\""
 
   join_events:
     src_dir: "../../src/features/join_events.py"
-    CLI_params: "../data/interim/merged_wells/train ../data/raw/events ../data/interim/joined_events/train"
+    CLI_params: "../../data/interim/merged_wells/train ../../data/raw/events ../../data/interim/joined_events/train"
 
   expand_target:
     src_dir: "../../src/features/expand_target.py"
-    CLI_params: "../data/interim/joined_events/train ../data/interim/expanded_target/train 7"
+    CLI_params: "../../data/interim/joined_events/train ../../data/interim/expanded_target/train 7"
 
   build_features:
     src_dir: "../../src/features/build_features_v2.py"
     # input_path events_path output_path target_window verbose
-    CLI_params: "../data/interim/merged_wells/train ../data/interim/featured/train"
+    CLI_params: "../../data/interim/merged_wells/train ../../data/interim/featured/train"
 
   merge:
     src_dir: "../../src/data/merge_features.py"
-    CLI_params: "../data/interim/featured/train ../data/interim/expanded_target/train ../data/interim/merged_features/train"
+    CLI_params: "../../data/interim/featured/train ../../data/interim/expanded_target/train ../../data/interim/merged_features/train"
 
   create_dataset:
     src_dir: "../../src/data/create_dataset.py"
     # input_path output_path
-    CLI_params: "../data/interim/merged_features/train ../data/interim/datasets/train.csv"
+    CLI_params: "../../data/interim/merged_features/train ../../data/interim/datasets/train.csv"
 
   clear_nulls:
     src_dir: "../../src/data/preprocessing.py"
-    CLI_params: "../data/interim/datasets/train.csv ../data/processed/train.csv"
+    CLI_params: "../../data/interim/datasets/train.csv ../../data/processed/train.csv"
 
 
 predict_dag:
   resample_data:
     src_dir: "../../src/data/resample_data.py"
-    CLI_params: "../data/interim/train_test/test ../data/interim/resampled/test \"01-10-2021\" \"31-12-2021\""
+    CLI_params: "../../data/interim/train_test/test ../../data/interim/resampled/test \"01-10-2021\" \"31-12-2021\""
 
   merge_by_well:
     src_dir: "../../src/data/merge_by_well.py"
-    CLI_params: "../data/interim/resampled/test ../data/interim/merged_wells/test \"01-10-2021\" \"31-12-2021\""
+    CLI_params: "../../data/interim/resampled/test ../../data/interim/merged_wells/test \"01-10-2021\" \"31-12-2021\""
 
   join_events:
     src_dir: "../../src/features/join_events.py"
-    CLI_params: "../data/interim/merged_wells/test ../data/raw/events ../data/interim/joined_events/test"
+    CLI_params: "../../data/interim/merged_wells/test ../../data/raw/events ../../data/interim/joined_events/test"
 
   expand_target:
     src_dir: "../../src/features/expand_target.py"
-    CLI_params: "../data/interim/joined_events/test ../data/interim/expanded_target/test 7"
+    CLI_params: "../../data/interim/joined_events/test ../../data/interim/expanded_target/test 7"
 
   build_features:
     src_dir: "../../src/features/build_features_v2.py"
     # input_path events_path output_path target_window verbose
-    CLI_params: "../data/interim/merged_wells/test ../data/interim/featured/test"
+    CLI_params: "../../data/interim/merged_wells/test ../../data/interim/featured/test"
 
   merge:
     src_dir: "../../src/data/merge_features.py"
-    CLI_params: "../data/interim/featured/test ../data/interim/expanded_target/test ../data/interim/merged_features/test"
+    CLI_params: "../../data/interim/featured/test ../../data/interim/expanded_target/test ../../data/interim/merged_features/test"
 
   create_dataset:
     src_dir: "../../src/data/create_dataset.py"
     # input_path output_path
-    CLI_params: "./data/interim/merged_features/test ./data/interim/datasets/test.csv"
+    CLI_params: "../../data/interim/merged_features/test ../../data/interim/datasets/test.csv"
 
   clear_nulls:
     src_dir: "../../src/data/preprocessing.py"
-    CLI_params: "../data/interim/datasets/test.csv ../data/processed/test.csv"
+    CLI_params: "../../data/interim/datasets/test.csv ../../data/processed/test.csv"
 
 
 predict:
   src_dir: "../../src/models/predict.py"
   # input_path output_path model_name
-  CLI_params: "../data/processed/test.csv ../data/predictions lr_model.pkl"
+  CLI_params: "../../data/processed/test.csv ../../data/predictions lr_model.pkl"
 
 
 train:
   src_dir: "../../src/models/train.py"
   # train_path output_path target_name model_name
-  CLI_params: "../data/processed/train.csv ../models/lr_model.pkl \"target_failure\""
+  CLI_params: "../../data/processed/train.csv ../../models/lr_model.pkl \"target_failure\""
 
 
 evaluate:
   src_dir: "../../src/models/evaluate.py"
-  CLI_params: "../models/lr_model.pkl ../data/processed/test.csv \"target_failure\" ../data/predictions"
+  CLI_params: "../../models/lr_model.pkl ../../data/processed/test.csv \"target_failure\" ../../data/predictions"
 
