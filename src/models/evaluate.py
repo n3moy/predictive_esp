@@ -81,9 +81,11 @@ def get_version_model(config_name, client):
 
 
 # load_dotenv()
-remote_server_uri = "http://127.0.0.1:5000"     # os.getenv("MLFLOW_TRACKING_URI")
+remote_server_uri = os.environ["MLFLOW_TRACKING_URI"]     # os.getenv("MLFLOW_TRACKING_URI")
 config_path = os.environ["CONFIG_PATH_PARAMS"]
 FILENAME = "evaluate_preds.csv"
+
+mlflow.set_tracking_uri(remote_server_uri)
 
 
 @click.command()
@@ -105,9 +107,8 @@ def evaluate(
     test_data = test_data.dropna()
     model = joblib.load(model_path)
     X, y = test_data.drop([target_name, "event_id"], axis=1), test_data[target_name]
-    mlflow.set_tracking_uri(remote_server_uri)
-    mlflow_experiment_id = "lr_model"
-    mlflow.set_experiment(mlflow_experiment_id)
+    # mlflow_experiment_id = "lr_model"
+    # mlflow.set_experiment(mlflow_experiment_id)
     config = yaml.safe_load(open(config_path))
 
     with mlflow.start_run():
