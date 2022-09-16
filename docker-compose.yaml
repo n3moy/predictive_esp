@@ -6,7 +6,7 @@ x-airflow-common:
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
-    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/postgres
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/airflow
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
@@ -35,8 +35,8 @@ services:
     networks:
         - s3
     environment: 
-        MINIO_ACCESS_KEY: ${AWS_ACCESS_KEY_ID}
-        MINIO_SECRET_KEY: ${AWS_SECRET_ACCESS_KEY}
+        MINIO_ROOT_USER: ${AWS_ACCESS_KEY_ID}
+        MINIO_ROOT_PASSWORD: ${AWS_SECRET_ACCESS_KEY}
     healthcheck:
         test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
         interval: 30s
@@ -47,6 +47,7 @@ services:
         
   nginx:
     image: nginx:1.23-alpine
+#    restart: always
     container_name: nginx
     hostname: nginx
     volumes:
@@ -67,7 +68,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_HOST_AUTH_METHOD: trust
+#      POSTGRES_HOST_AUTH_METHOD: trust
       PGDATA: /data/postgres
     volumes:
         - postgres:/data/postgres
@@ -99,28 +100,15 @@ services:
     networks:
         - postgres
         - s3
-    expose:
-        - "5000"
+#    expose:
+#        - "5000"
     environment:
         - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
         - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
         - MLFLOW_S3_ENDPOINT_URL=http://nginx:9000
-        - MLFLOW_TRACKING_URI=${MLFLOW_TRACKING_URI}
-    command: mlflow server --backend-store-uri postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB} --default-artifact-root s3://${AWS_S3_BUCKET}/ --host 0.0.0.0 --port 5000
-    env_file:
-      - .env
-
-#  redis:
-#    image: redis:latest
-#    expose:
-#      - 6379
-#    healthcheck:
-#      test: ["CMD", "redis-cli", "ping"]
-#      interval: 5s
-#      timeout: 30s
-#      retries: 50
-#    restart: always
-
+#        - MLFLOW_TRACKING_URI=${MLFLOW_TRACKING_URI}
+    command: mlflow server --backend-store-uri postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/${POSTGRES_DB} --default-artifact-root s3://${AWS_S3_BUCKET}/ --host 0.0.0.0
+    
   airflow-init:
     <<: *airflow-common
     image: airflow-init
@@ -145,7 +133,7 @@ services:
     <<: *airflow-common
 #    build:
 #      context: ./Docker/airflow-base
-    image: airflow-webserver
+    image: airflow-base
     container_name: airflow_webserver
     command: webserver
     ports:
@@ -162,6 +150,7 @@ services:
       retries: 5
     networks:
       - postgres
+      - s3
     restart: always
 
   airflow-scheduler:
@@ -172,9 +161,10 @@ services:
     restart: always
     networks:
       - postgres
+      - s3
     env_file:
       - .env
-        
+    
 networks:
     s3:
         driver: bridge

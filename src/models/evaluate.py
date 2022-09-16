@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 from mlflow.tracking import MlflowClient
 from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_auc_score, f1_score
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 
 
 def evaluate_results(
@@ -80,8 +80,8 @@ def get_version_model(config_name, client):
     return dict(list(dict_push.items())[-1][1])["version"]
 
 
-# load_dotenv()
-remote_server_uri = os.environ["MLFLOW_TRACKING_URI"]     # os.getenv("MLFLOW_TRACKING_URI")
+load_dotenv()
+remote_server_uri = os.getenv("MLFLOW_TRACKING_URI")
 config_path = os.environ["CONFIG_PATH_PARAMS"]
 FILENAME = "evaluate_preds.csv"
 
@@ -107,11 +107,15 @@ def evaluate(
     test_data = test_data.dropna()
     model = joblib.load(model_path)
     X, y = test_data.drop([target_name, "event_id"], axis=1), test_data[target_name]
-    # mlflow_experiment_id = "lr_model"
-    # mlflow.set_experiment(mlflow_experiment_id)
+    mlflow_experiment_id = "lr_model"
+    print(remote_server_uri)
+    mlflow.set_experiment(mlflow_experiment_id)
     config = yaml.safe_load(open(config_path))
 
     with mlflow.start_run():
+        mlflow.get_artifact_uri()
+        print(mlflow.get_artifact_uri())
+
         prediction = model.predict(X)
         accuracy = accuracy_score(y, prediction)
         precision = precision_score(y, prediction)
