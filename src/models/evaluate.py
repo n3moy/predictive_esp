@@ -7,6 +7,7 @@ import mlflow
 import pandas as pd
 import numpy as np
 from mlflow.tracking import MlflowClient
+from mlflow.models.signature import infer_signature
 from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_auc_score, f1_score
 from dotenv import load_dotenv
 
@@ -134,11 +135,13 @@ def evaluate(
         mlflow.log_metric("ROC_AUC_signal", roc_auc)
         mlflow.log_metric("F1_score_signal", f1)
 
+        signature = infer_signature(X, y)
         mlflow.log_metrics(table_metrics)
         mlflow.sklearn.log_model(
             sk_model=model,
-            artifact_path="lr_model",
-            registered_model_name=config["train"]["model_name"]
+            artifact_path=mlflow_experiment_id,
+            registered_model_name=config["train"]["model_name"],
+            signature=signature
         )
 
         mlflow.end_run()
