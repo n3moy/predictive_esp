@@ -11,7 +11,7 @@ I Used:
 - Airflow
 - MLFlow 
 - S3 storage Minio for artifacts storage
-- Postgres DB for Airflow and MLFlow for data of authorization, experiments, paths, dag runs, users etc.
+- Postgres DB for Airflow and MLFlow data authorization, experiments, paths, dag runs, users etc.
 
 Airflow DAGs dependencies:
 
