@@ -3,7 +3,6 @@ import os
 import click
 import joblib
 import pandas as pd
-# from sklearn.linear_model import LogisticRegression
 
 FILENAME = "predictions.csv"
 

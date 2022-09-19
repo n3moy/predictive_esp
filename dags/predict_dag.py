@@ -31,7 +31,7 @@ with DAG(
 ) as predict_dag:
     predict_params = yaml.safe_load(open(config_path))["predict"]
     sensor_predict = ExternalTaskSensor(
-        task_id="sensor_predict",
+        task_id="test_data_processed",
         external_dag_id="preprocess_predict_dag",
         external_task_id="maker_predict_preprocess",
         allowed_states=["success", "skipped"],

@@ -32,14 +32,13 @@ with DAG(
     tasks_params = yaml.safe_load(open(config_path))["train_dag"]
 
     sensor_train_preprocess = ExternalTaskSensor(
-        task_id="sensor_train_preprocess",
+        task_id="train_extracted",
         external_dag_id="extract_data_dag",
         external_task_id="maker_train_extract",
         allowed_states=["success", "skipped"],
         failed_states=["failed"],
         mode="reschedule"
     )
-
     t1_name = "resample_data"
     t1 = BashOperator(
         task_id=t1_name,
@@ -83,12 +82,12 @@ with DAG(
     maker_train_nulls = ExternalTaskMarker(
         task_id="maker_train_nulls",
         external_dag_id="preprocess_predict_dag",
-        external_task_id="sensor_predict_nulls"
+        external_task_id="train_nulls_cleared"
     )
     maker_train_preprocess = ExternalTaskMarker(
         task_id="maker_train_preprocess",
         external_dag_id="train_dag",
-        external_task_id="sensor_train"
+        external_task_id="train_data_processed"
     )
 
     t1.set_upstream(sensor_train_preprocess)

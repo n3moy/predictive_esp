@@ -39,12 +39,12 @@ with DAG(
     maker_train_extract = ExternalTaskMarker(
         task_id="maker_train_extract",
         external_dag_id="preprocess_train_dag",
-        external_task_id="sensor_train_preprocess"
+        external_task_id="train_extracted"
     )
     maker_predict_extract = ExternalTaskMarker(
         task_id="maker_predict_extract",
         external_dag_id="preprocess_predict_dag",
-        external_task_id="sensor_predict_preprocess"
+        external_task_id="test_extracted"
     )
 
     maker_train_extract.set_upstream(t1)

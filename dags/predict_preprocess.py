@@ -33,7 +33,7 @@ with DAG(
     tasks_params = yaml.safe_load(open(config_path))["predict_dag"]
 
     sensor_predict_preprocess = ExternalTaskSensor(
-        task_id="sensor_predict_preprocess",
+        task_id="test_extracted",
         external_dag_id="extract_data_dag",
         external_task_id="maker_predict_extract",
         allowed_states=["success", "skipped"],
@@ -77,7 +77,7 @@ with DAG(
         bash_command=f"python3 {tasks_params[t7_name]['src_dir']} {tasks_params[t7_name]['CLI_params']}",
     )
     sensor_predict_nulls = ExternalTaskSensor(
-        task_id="sensor_predict_nulls",
+        task_id="train_nulls_cleared",
         external_dag_id="preprocess_train_dag",
         external_task_id="maker_train_nulls",
         allowed_states=["success"],
@@ -92,7 +92,12 @@ with DAG(
     maker_predict_preprocess = ExternalTaskMarker(
         task_id="maker_predict_preprocess",
         external_dag_id="predict_dag",
-        external_task_id="sensor_predict"
+        external_task_id="test_data_processed"
+    )
+    maker_predict_preprocess_2 = ExternalTaskMarker(
+        task_id="maker_predict_preprocess_2",
+        external_dag_id="evaluate_dag",
+        external_task_id="test_data_processed_2"
     )
 
     t1.set_upstream(sensor_predict_preprocess)
@@ -107,6 +112,6 @@ with DAG(
     sensor_predict_nulls.set_upstream(t7)
     t8.set_upstream(sensor_predict_nulls)
     maker_predict_preprocess.set_upstream(t8)
-
+    maker_predict_preprocess_2.set_upstream(t8)
 
 

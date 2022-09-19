@@ -19,11 +19,12 @@ def train_lr(
     target_name: str,
 ) -> None:
     """
-    Learns LogisticRegression model to find failures in data
-    :param train_path:
-    :param target_name:
-    :param model_path:
-    :return: lr_model.pkl
+    Learns LogisticRegression model to find failures and saves trained model into 'model_path'
+
+    :param train_path: filepath to train.csv
+    :param target_name: column name to learn, hardcoded as 'target_failure'
+    :param model_path: relative path to save trained model
+
     """
     train_data = pd.read_csv(train_path)
     train_data = train_data.select_dtypes(include=[float, int])
@@ -32,7 +33,6 @@ def train_lr(
     lr = LogisticRegression(random_state=42)
     lr.fit(X, y)
 
-    # print("Testing metrics")
     output_path = os.path.join(model_path)
     joblib.dump(lr, output_path)
 

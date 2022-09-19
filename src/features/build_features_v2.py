@@ -3,12 +3,10 @@ import os
 import click
 import pandas as pd
 import numpy as np
-# import yaml
 
 from feature_builder import FeatureCalculation
 
 COLS_TO_CALC = None
-CONFIG_PATH = "/c/py/predictive_esp/config/params_all.yaml"
 
 
 # This func should be used after joining data by well

@@ -38,7 +38,7 @@ with DAG(
 ) as train_dag:
     train_config = yaml.safe_load(open(config_path))["train"]
     sensor_train = ExternalTaskSensor(
-        task_id="sensor_train",
+        task_id="train_data_processed",
         external_dag_id="preprocess_train_dag",
         external_task_id="maker_train_preprocess",
         allowed_states=["success", "skipped"],
@@ -54,7 +54,7 @@ with DAG(
     maker_train1 = ExternalTaskMarker(
         task_id="maker_train1",
         external_dag_id="evaluate_dag",
-        external_task_id="sensor_train_model"
+        external_task_id="model_trained"
     )
     # maker_train2 = ExternalTaskMarker(
     #     task_id="maker_train2",

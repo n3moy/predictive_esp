@@ -31,33 +31,26 @@ with DAG(
 ) as evaluate_dag:
     train_config = yaml.safe_load(open(config_path))["evaluate"]
     sensor_evaluate = ExternalTaskSensor(
-        task_id="sensor_evaluate",
+        task_id="test_data_processed_2",
         external_dag_id="preprocess_predict_dag",
-        external_task_id="maker_predict_preprocess",
+        external_task_id="maker_predict_preprocess_2",
         allowed_states=["success", "skipped"],
         failed_states=["failed"],
         mode="reschedule"
     )
     sensor_train_model = ExternalTaskSensor(
-        task_id="sensor_train_model",
+        task_id="model_trained",
         external_dag_id="train_dag",
         external_task_id="maker_train1",
         allowed_states=["success"],
         failed_states=["failed", "skipped"],
         mode="reschedule"
     )
-
     t1_name = "evaluate"
     t1 = BashOperator(
         task_id=t1_name,
         bash_command=f"python3 {train_config['src_dir']} {train_config['CLI_params']}"
     )
-
-    # maker_train = ExternalTaskMarker(
-    #     task_id="maker_train",
-    #     external_dag_id="predict_dag",
-    #     external_task_id="sensor_predict"
-    # )
 
     [sensor_evaluate, sensor_train_model] >> t1
 
