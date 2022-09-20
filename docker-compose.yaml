@@ -164,6 +164,18 @@ services:
       - s3
     env_file:
       - .env
+
+  app:
+    image: model_service
+    container_name: model_service
+    ports:
+      - "8003:80"
+    networks:
+      - s3
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - MLFLOW_S3_ENDPOINT_URL=http://nginx:9000
+
     
 networks:
     s3:

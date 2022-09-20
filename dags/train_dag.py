@@ -56,11 +56,6 @@ with DAG(
         external_dag_id="evaluate_dag",
         external_task_id="model_trained"
     )
-    # maker_train2 = ExternalTaskMarker(
-    #     task_id="maker_train2",
-    #     external_dag_id="evaluate_dag",
-    #     external_task_id="sensor_predict"
-    # )
 
     sensor_train >> t1 >> maker_train1
 
