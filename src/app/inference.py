@@ -19,7 +19,7 @@ os.environ["MLFLOW_S3_ENDPOINT_URL"] = os.getenv("MLFLOW_S3_ENDPOINT_URL")
 
 class Model:
     def __init__(self, model_name: str, model_stage: str):
-        self.model = mlflow.pyfunc.load_model(f"models:/{model_name}/{model_stage}")
+        self.model = mlflow.sklearn.load_model(f"models:/{model_name}/{model_stage}")
 
     def predict(self, data: pd.DataFrame):
         predictions = self.model.predict(data)
